@@ -108,3 +108,10 @@ form input[type=text] {
         width: 100%;
     }
 }
+
+@media screen and (max-width: 330px) { 
+    header h1 {
+        padding: 0.5em 0;
+        font-size: 1.5em;
+    }
+}

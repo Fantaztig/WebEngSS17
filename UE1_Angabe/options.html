@@ -1,30 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="de">
     <head>
         <meta charset="utf-8" />
-        <title xml:lang="de">Übersicht</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Optionen</title>
     </head>
     <body>
-        <nav>
+        <header>
             <img src="images/big-logo-small.png" alt="BIG Logo"/>
             <h1>BIG Smart Home</h1>
-            <a href="login.html">Abmelden</a>
-        </nav>
+            <nav>
+                <ul>
+                    <li><a href="login.html" title="Abmelden">Abmelden</a></li>
+                </ul>
+            </nav>
+        </header>
         <main>
             <section>
                 <h2>Passwort ändern</h2>
                 <form name="update" action="options.html" method="POST" accept-charset="utf-8">
-                    <ul>
-                        <li><label for="oldpw">Altes Passwort</label>
-                        <input type="password" name="oldpw" required placeholder="Altes Passwort"></li>
-                        <li><label for="newpw">Neues Passwort</label>
-                        <input type="password" name="newpw" required placeholder="Neues Passwort" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}"></li>
-                        <li><label for="newpwverify">Passwort wiederholen</label>
-                        <input type="password" name="newpwverify" required placeholder="Neues Passwort wiederholen" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}"></li>
-                        <li>
-                        <input type="submit" value="Änderung speichern"></li>
-                    </ul>
+                    <label for="oldpw">Altes Passwort</label>
+                    <input type="password" name="oldpw" required placeholder="Altes Passwort">
+                    <label for="newpw">Neues Passwort</label>
+                    <input type="password" name="newpw" required placeholder="Neues Passwort" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
+                    <label for="newpwverify">Passwort wiederholen</label>
+                    <input type="password" name="newpwverify" required placeholder="Neues Passwort wiederholen" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
+                    <input type="submit" value="Änderung speichern">
                 </form>
             </section>
         </main>

@@ -50,8 +50,9 @@ header h1 {
 
 main {
     margin: 7em auto;
-    max-width: 1000px;
+    max-width: 1200px;
     padding:1em;
+    box-sizing: border-box;
 }
 
 footer {
@@ -92,7 +93,7 @@ form label {
 form input[type=password],
 form input[type=text] {
     display: inline-block;
-    width:49%;
+    width:48%;
     box-sizing: border-box;
     padding: 0.5em;
 }

@@ -100,6 +100,7 @@ header nav ul li a {
     display: none;
 }
 
+header nav ul li ul li,
 header nav ul li ul li a {
     display: inline-block;
 }
@@ -114,6 +115,10 @@ header nav ul li ul li a {
         position: absolute;
         right:0px;
         margin-right: 1em;
+    }
+
+    header nav ul li ul li {
+        display: block;
     }
 
     header nav ul li ul li a {

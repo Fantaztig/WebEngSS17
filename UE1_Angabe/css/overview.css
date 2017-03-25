@@ -1,62 +1,161 @@
-@media screen and (max-width: 768px) {
-    .flexbox {
-        display: flex;
-        flex-direction: row;
-        flex-grow: 1;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        width: 100%;
-        padding: 0;
-        margin:0px;
-    }
-    .flexitem {
-        background: white;
-        width: 100%;
-        color: black;
-        font-size: 1em;
-        border: 1px solid #d2d4d8;
-        border-radius: 5px;
-        box-shadow: 0px 0px 20px #ced0d6;
-        margin: 5px 0;
-        padding: 10px;
-    }
+@media screen and (max-width: 767px) {
     aside {
         width: 100%;
         height: 20%;
+        border-bottom: 1px solid lightgray;
     }
-    .divider {
-        border: 1px solid lightgrey;
+    aside h2 {
+        margin: 0.6em 0em;
     }
-    .flexitem img {
-        border: 0px solid #A1A1A1;
-        border-radius: 5px 0 0 5px;
-        width: 30%;
-        height: auto;
-        float: left;
-        background: lightgray;
+    .devices {
+        flex-direction: column;
     }
-    .details {
-        float: right;
-        max-width: 250px;
-        width: auto;
+    .devices h2 {
+        width: 100%;
     }
-    .details img {
-        background: white;
-        border: 0px solid #A1A1A1;
-        border-radius: 5px;
-        margin: 1%;
-        padding: 0;
-        width: 24px;
-        float: right;
+    .flexbox {
+        justify-content: center;
     }
+    .flexitem {
+        margin: 10px 0;
+    }
+}
+
+@media screen and (min-width:768px) and (max-width: 1199px) {
+    aside {
+        width: 100%;
+        border-left: 1px solid lightgray;
+        padding-left: 15px;
+        min-width: 245px;
+        max-width: 300px;
+    }
+    .devices h2 {
+        width: 100%;
+    }
+    aside h2 {
+        margin: 0.8em 0em;
+    }
+    .flexbox {
+        justify-content: center;
+        align-content: center;
+    }
+    .devices {
+        flex-direction: row-reverse;
+    }
+    .flexitem {
+        margin: 10px 10px;
+    }
+}
+
+@media screen and (min-width:1200px) {
+    aside {
+        width: 100%;
+        border-left: 1px solid lightgray;
+        padding-left: 15px;
+        min-width: 245px;
+        max-width: 300px;
+    }
+    .devices {
+        flex-direction: row-reverse;
+    }
+    .devices h2 {
+        width: 100%;
+    }
+    .flexbox {
+        justify-content: space-around;
+    }
+    .flexitem {
+        margin: 10px 10px;
+    }
+}
+
+main {
+    max-width: 100%;
+}
+
+.details h3 {
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+
+.details h4 {
+    font-weight: normal;
+    font-size: 1.05em;
+}
+
+.details p {
+    font-size: 0.9em;
+}
+
+.flexbox h2 {
+    float: top;
+    margin: 0.8em 0em;
+}
+
+.imgcontainer img {
+    border: 0px solid #A1A1A1;
+    border-radius: 5px 0 0 5px;
+    width: 100%;
+    max-height: 145px;
+}
+
+.details {
+    position: relative;
+    width: 100%;
+    max-width: 250px;
+    padding: 10px;
+    min-width: 175px;
+    height: 170px;
+}
+
+.deviceoptions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.deviceoptions img {
+    width: 24px;
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.imgcontainer {
+    width: 100%;
+    max-width: 185px;
+    min-width: 145px;
+    padding: 20px;
+    background: lightgray;
+}
+
+.flexbox {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 0;
+}
+
+.flexitem {
+    background: white;
+    width: 100%;
+    max-width: 410px;
+    color: black;
+    font-size: 1em;
+    border: 1px solid #d2d4d8;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(150, 150, 150, 0.75);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(150, 150, 150, 0.75);
+    box-shadow: 0px 0px 10px 0px rgba(150, 150, 150, 0.75);
+    display: flex;
+    max-height: 200px;
 }
 
 .devices {
-    margin: 2.5%;
-}
-
-.devices h2 {
-    float: top;
+    margin: 10px;
+    display: flex;
 }
 
 dl {
@@ -69,7 +168,6 @@ dt {
     font-weight: bold;
     float: left;
     width: 50%;
-    /* adjust the width; make sure the total of both is 100% */
     padding: 0;
     margin: 0.5em 0;
 }
@@ -78,7 +176,6 @@ dd {
     float: left;
     text-align: right;
     width: 50%;
-    /* adjust the width; make sure the total of both is 100% */
     padding: 0;
     margin: 0.5em 0;
 }

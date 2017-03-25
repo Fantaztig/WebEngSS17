@@ -2,8 +2,8 @@
 
 * {
     font-family: Arial, Helvetica, sans-serif;
-    padding:0px;
-    margin:0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 html {
@@ -13,6 +13,7 @@ html {
 
 body {
     margin: 0px;
+    height: 100%;
     background: rgba(255, 255, 255, 1);
     background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(212, 226, 237, 1) 100%);
     background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(100%, rgba(212, 226, 237, 1)));
@@ -21,6 +22,7 @@ body {
     background: -ms-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(212, 226, 237, 1) 100%);
     background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(212, 226, 237, 1) 100%);
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d4e2ed', GradientType=0);
+    background-attachment: fixed;
 }
 
 
@@ -54,6 +56,7 @@ header img {
 header h1 {
     color: #333;
     font-size: 1.9em;
+    margin: 0.6em 0em;
 }
 
 @media screen and (max-width: 399px) {

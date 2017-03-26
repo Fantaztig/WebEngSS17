@@ -214,3 +214,9 @@ footer {
     width: 100%;
     text-align: center;
 }
+
+.accesibility {
+    position: absolute;
+    top: -999em;
+    left: -999em;
+}

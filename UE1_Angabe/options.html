@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Optionen</title>
-        <link rel="stylesheet" href="css/basic.css" type="text/css" />
+        <link rel="stylesheet" href="styles/basic.css" type="text/css" />
     </head>
     <body>
         <a href="#main" class="accesibility" title="Skip to content" accesskey="s"> Skip to content </a>
@@ -27,11 +27,11 @@
                 <h2>Passwort ändern</h2>
                 <form name="update" action="options.html" method="POST" accept-charset="utf-8">
                     <label for="oldpw">Altes Passwort</label>
-                    <input type="password" name="oldpw" required placeholder="Altes Passwort">
+                    <input type="password" name="oldpw" id="oldpw" required placeholder="Altes Passwort">
                     <label for="newpw">Neues Passwort</label>
-                    <input type="password" name="newpw" required placeholder="Neues Passwort" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
+                    <input type="password" name="newpw" id="newpw" required placeholder="Neues Passwort" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
                     <label for="newpwverify">Passwort wiederholen</label>
-                    <input type="password" name="newpwverify" required placeholder="Neues Passwort wiederholen" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
+                    <input type="password" name="newpwverify" id="newpwverify" required placeholder="Neues Passwort wiederholen" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}">
                     <input type="submit" value="Änderung speichern">
                 </form>
             </section>

@@ -1,7 +1,7 @@
 /**
  * Created by Reyhan Ibrahim on 13.04.2017.
  */
-import {RouterModule, Routes} from '@angular/router';
+import { Routes,RouterModule} from '@angular/router';
 import {LoginComponent} from "./components/login.component";
 import {ModuleWithProviders} from "@angular/core";
 

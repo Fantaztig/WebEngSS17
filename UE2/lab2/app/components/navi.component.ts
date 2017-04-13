@@ -9,7 +9,7 @@ import {Component} from '@angular/core'
     template: `
 
         <header aria-labelledby="bannerheadline">
-        <a href="/login">
+        <a routerLink="/login">
             <img class="title-image" src="/images/big-logo-small.png" alt="BIG Smart Home logo">
         </a>
         <h1 class="header-title" id="bannerheadline">

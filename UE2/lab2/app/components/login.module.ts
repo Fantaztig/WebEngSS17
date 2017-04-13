@@ -6,6 +6,7 @@ import {CommonModule} from "@angular/common";
 import {LoginComponent} from "./login.component";
 import {NaviModule} from "./navi.module";
 
+
 @NgModule({
     imports: [CommonModule, NaviModule],
     declarations: [LoginComponent],

@@ -13,6 +13,9 @@ var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var ng2_charts_1 = require('ng2-charts');
 var app_component_1 = require('./components/app.component');
+var app_routing_1 = require("./app.routing");
+var navi_module_1 = require("./components/navi.module");
+var login_module_1 = require("./components/login.module");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -22,9 +25,12 @@ var AppModule = (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 ng2_charts_1.ChartsModule,
+                navi_module_1.NaviModule,
+                login_module_1.LoginModule,
+                app_routing_1.routing
             ],
             declarations: [
-                app_component_1.AppComponent,
+                app_component_1.AppComponent
             ],
             providers: [],
             bootstrap: [app_component_1.AppComponent]

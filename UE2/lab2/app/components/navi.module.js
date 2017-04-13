@@ -8,20 +8,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var AppComponent = (function () {
-    function AppComponent() {
-        this.name = "World";
+/**
+ * Created by Reyhan Ibrahim on 13.04.2017.
+ */
+var core_1 = require("@angular/core");
+var common_1 = require("@angular/common");
+var navi_component_1 = require("./navi.component");
+var NaviModule = (function () {
+    function NaviModule() {
     }
-    AppComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'my-app',
-            template: "\n            \n            "
+    NaviModule = __decorate([
+        core_1.NgModule({
+            imports: [common_1.CommonModule],
+            declarations: [navi_component_1.NavComponent],
+            exports: [navi_component_1.NavComponent]
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], NaviModule);
+    return NaviModule;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.NaviModule = NaviModule;
+//# sourceMappingURL=navi.module.js.map

@@ -10,13 +10,25 @@ import {Component, OnInit} from '@angular/core'
 })
 
 export class OptionsComponent{
-
+    equalPasswords: boolean=false;
     password_new: string;
     password_old: string;
     password_wh: string;
 
     onSubmit() {
-        alert(this.password_new);
+        this.password_new="";
+        this.password_old="";
+        this.password_wh="";
+    }
+
+    checkIfEqualToNewPassword(){
+
+
+        if(this.password_new===this.password_wh){
+            this.equalPasswords=true;
+        }else{
+            this.equalPasswords=false;
+        }
     }
 
 }

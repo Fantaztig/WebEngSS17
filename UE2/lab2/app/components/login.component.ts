@@ -11,11 +11,19 @@ import {Router} from '@angular/router';
 })
 
 export class LoginComponent{
-
+     username:string;
+     password:string;
     constructor(private router: Router) {
     }
 
-    onSubmit() { 
+    onSubmit() {
+
+
         this.router.navigateByUrl("/overview");
+    }
+    setUserData(){
+        localStorage.setItem("userName", this.username);
+        localStorage.setItem("userPassword", this.password);
+
     }
 }

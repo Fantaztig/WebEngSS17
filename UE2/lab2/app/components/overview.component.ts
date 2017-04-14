@@ -13,6 +13,7 @@ import {Device} from '../model/device';
 })
 
 export class OverviewComponent implements OnInit{
+    userName:string = localStorage.getItem("userName");
 
     devices: Device[];
 

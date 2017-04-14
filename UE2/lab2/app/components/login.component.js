@@ -20,6 +20,10 @@ var LoginComponent = (function () {
     LoginComponent.prototype.onSubmit = function () {
         this.router.navigateByUrl("/overview");
     };
+    LoginComponent.prototype.setUserData = function () {
+        localStorage.setItem("userName", this.username);
+        localStorage.setItem("userPassword", this.password);
+    };
     LoginComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

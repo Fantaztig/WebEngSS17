@@ -16,6 +16,7 @@ var device_service_1 = require('../services/device.service');
 var OverviewComponent = (function () {
     function OverviewComponent(deviceService) {
         this.deviceService = deviceService;
+        this.userName = localStorage.getItem("userName");
     }
     OverviewComponent.prototype.ngOnInit = function () {
         var _this = this;

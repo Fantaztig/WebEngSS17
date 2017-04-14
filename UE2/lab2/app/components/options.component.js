@@ -14,9 +14,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var OptionsComponent = (function () {
     function OptionsComponent() {
+        this.equalPasswords = false;
     }
     OptionsComponent.prototype.onSubmit = function () {
-        alert(this.password_new);
+        this.password_new = "";
+        this.password_old = "";
+        this.password_wh = "";
+    };
+    OptionsComponent.prototype.checkIfEqualToNewPassword = function () {
+        if (this.password_new === this.password_wh) {
+            this.equalPasswords = true;
+        }
+        else {
+            this.equalPasswords = false;
+        }
     };
     OptionsComponent = __decorate([
         core_1.Component({

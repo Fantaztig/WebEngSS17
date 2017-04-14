@@ -15,12 +15,13 @@ var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
 var login_component_1 = require("./login.component");
 var navi_module_1 = require("./navi.module");
+var forms_1 = require('@angular/forms');
 var LoginModule = (function () {
     function LoginModule() {
     }
     LoginModule = __decorate([
         core_1.NgModule({
-            imports: [common_1.CommonModule, navi_module_1.NaviModule],
+            imports: [common_1.CommonModule, navi_module_1.NaviModule, forms_1.FormsModule],
             declarations: [login_component_1.LoginComponent],
             exports: [login_component_1.LoginComponent]
         }), 

@@ -19,7 +19,7 @@ var NavComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'navi',
-            template: "\n\n        <header aria-labelledby=\"bannerheadline\">\n        <a routerLink=\"/login\">\n            <img class=\"title-image\" src=\"/images/big-logo-small.png\" alt=\"BIG Smart Home logo\">\n        </a>\n        <h1 class=\"header-title\" id=\"bannerheadline\">\n            BIG Smart Home\n        </h1>\n        <nav aria-labelledby=\"navigationheadline\">\n            <h2 class=\"accessibility\" id=\"navigationheadline\">Navigation</h2>\n            <ul class=\"navigation-list\">\n            </ul>\n        </nav>\n    </header>\n\n    "
+            templateUrl: 'navi.component.html'
         }), 
         __metadata('design:paramtypes', [])
     ], NavComponent);

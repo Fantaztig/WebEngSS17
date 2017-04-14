@@ -16,6 +16,8 @@ var app_component_1 = require('./components/app.component');
 var app_routing_1 = require("./app.routing");
 var navi_module_1 = require("./components/navi.module");
 var login_module_1 = require("./components/login.module");
+var overview_module_1 = require("./components/overview.module");
+var details_module_1 = require("./components/details.module");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -27,6 +29,8 @@ var AppModule = (function () {
                 ng2_charts_1.ChartsModule,
                 navi_module_1.NaviModule,
                 login_module_1.LoginModule,
+                overview_module_1.OverviewModule,
+                details_module_1.DetailsModule,
                 app_routing_1.routing
             ],
             declarations: [

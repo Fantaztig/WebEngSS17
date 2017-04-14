@@ -7,6 +7,8 @@ import { AppComponent }         from './components/app.component';
 import {routing} from "./app.routing";
 import {NaviModule} from "./components/navi.module";
 import {LoginModule} from "./components/login.module";
+import {OverviewModule} from "./components/overview.module";
+import {DetailsModule} from "./components/details.module";
 
 @NgModule({
   imports: [
@@ -15,6 +17,8 @@ import {LoginModule} from "./components/login.module";
     ChartsModule,
     NaviModule,
     LoginModule,
+    OverviewModule,
+    DetailsModule,
     routing
   ],
   declarations: [

@@ -18,6 +18,7 @@ var navi_module_1 = require("./components/navi.module");
 var login_module_1 = require("./components/login.module");
 var overview_module_1 = require("./components/overview.module");
 var details_module_1 = require("./components/details.module");
+var options_module_1 = require("./components/options.module");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -31,6 +32,7 @@ var AppModule = (function () {
                 login_module_1.LoginModule,
                 overview_module_1.OverviewModule,
                 details_module_1.DetailsModule,
+                options_module_1.OptionsModule,
                 app_routing_1.routing
             ],
             declarations: [

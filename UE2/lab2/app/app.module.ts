@@ -9,6 +9,7 @@ import {NaviModule} from "./components/navi.module";
 import {LoginModule} from "./components/login.module";
 import {OverviewModule} from "./components/overview.module";
 import {DetailsModule} from "./components/details.module";
+import {OptionsModule} from "./components/options.module";
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import {DetailsModule} from "./components/details.module";
     LoginModule,
     OverviewModule,
     DetailsModule,
+    OptionsModule,
     routing
   ],
   declarations: [

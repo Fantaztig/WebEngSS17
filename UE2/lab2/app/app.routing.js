@@ -6,10 +6,12 @@ var router_1 = require('@angular/router');
 var login_component_1 = require("./components/login.component");
 var overview_component_1 = require("./components/overview.component");
 var details_component_1 = require('./components/details.component');
+var options_component_1 = require('./components/options.component');
 var appRoutes = [
     { path: '', pathMatch: 'full', redirectTo: 'login' },
     { path: 'login', component: login_component_1.LoginComponent },
     { path: 'overview', component: overview_component_1.OverviewComponent },
+    { path: 'options', component: options_component_1.OptionsComponent },
     { path: 'device-details/:id', component: details_component_1.DetailsComponent },
     { path: '**', redirectTo: 'login' }
 ];

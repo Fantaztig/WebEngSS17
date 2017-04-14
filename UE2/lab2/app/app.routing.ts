@@ -5,12 +5,14 @@ import { Routes,RouterModule} from '@angular/router';
 import {LoginComponent} from "./components/login.component";
 import {OverviewComponent} from "./components/overview.component";
 import {DetailsComponent} from './components/details.component';
+import {OptionsComponent} from './components/options.component';
 import {ModuleWithProviders} from "@angular/core";
 
 const appRoutes: Routes= [
     { path: '',pathMatch: 'full',redirectTo: 'login' },
     { path:'login', component: LoginComponent },
     { path:'overview', component: OverviewComponent },
+    { path:'options', component: OptionsComponent },
     { path:'device-details/:id', component: DetailsComponent },
     { path: '**',redirectTo: 'login' }
 ];

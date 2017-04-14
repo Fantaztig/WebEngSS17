@@ -12,16 +12,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by Reyhan Ibrahim on 13.04.2017.
  */
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+require('rxjs/add/operator/filter');
 var NavComponent = (function () {
-    function NavComponent() {
+    function NavComponent(route, router) {
+        this.route = route;
+        this.router = router;
     }
+    NavComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.router.events
+            .filter(function (event) { return event instanceof router_1.NavigationEnd; })
+            .subscribe(function (event) {
+            var currentRoute = _this.route.root;
+            while (currentRoute.children[0] !== undefined) {
+                currentRoute = currentRoute.children[0];
+            }
+            currentRoute.url.subscribe(function (url) {
+                _this.currentComponent = url[0].path;
+            });
+        });
+    };
     NavComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'navi',
             templateUrl: 'navi.component.html'
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router])
     ], NavComponent);
     return NavComponent;
 }());

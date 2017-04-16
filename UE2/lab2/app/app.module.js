@@ -19,6 +19,7 @@ var login_module_1 = require("./components/login.module");
 var overview_module_1 = require("./components/overview.module");
 var details_module_1 = require("./components/details.module");
 var options_module_1 = require("./components/options.module");
+var util_edit_device_1 = require('./util/util.edit.device');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -36,7 +37,7 @@ var AppModule = (function () {
                 app_routing_1.routing
             ],
             declarations: [
-                app_component_1.AppComponent
+                app_component_1.AppComponent, util_edit_device_1.SaveDeviceNameDirective
             ],
             providers: [],
             bootstrap: [app_component_1.AppComponent]

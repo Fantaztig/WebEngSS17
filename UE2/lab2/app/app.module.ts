@@ -10,6 +10,7 @@ import {LoginModule} from "./components/login.module";
 import {OverviewModule} from "./components/overview.module";
 import {DetailsModule} from "./components/details.module";
 import {OptionsModule} from "./components/options.module";
+import {SaveDeviceNameDirective} from './util/util.edit.device';
 
 @NgModule({
   imports: [
@@ -22,9 +23,10 @@ import {OptionsModule} from "./components/options.module";
     DetailsModule,
     OptionsModule,
     routing
+
   ],
   declarations: [
-    AppComponent
+    AppComponent, SaveDeviceNameDirective
   ],
   providers: [
   ],

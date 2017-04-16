@@ -5,6 +5,7 @@ import {Component, OnInit} from '@angular/core'
 import {DeviceService} from '../services/device.service';
 import {Device} from '../model/device';
 
+
 @Component ({
     moduleId: module.id,
     selector: 'overview',

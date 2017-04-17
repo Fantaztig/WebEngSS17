@@ -18,6 +18,15 @@ var OverviewComponent = (function () {
         this.deviceService = deviceService;
         this.userName = localStorage.getItem("userName");
     }
+    OverviewComponent.prototype.isEditable = function (id) {
+        return (this.editableDeviceId === id);
+    };
+    OverviewComponent.prototype.onChangeName = function (id) {
+        this.editableDeviceId = id;
+    };
+    OverviewComponent.prototype.onSaveName = function (id) {
+        this.editableDeviceId = null;
+    };
     OverviewComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.deviceService.getDevices().then(function (devices) {

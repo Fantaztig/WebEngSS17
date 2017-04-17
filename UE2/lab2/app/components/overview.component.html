@@ -29,11 +29,12 @@
 
      <div class="devices">
       <div *ngFor="let device of devices" class="device-outer">
-        <a [routerLink]="['/device-details', device.id]" routerLinkActive="active" class="device"
+        <a [routerLink]="!isEditable(device.id) ? ['/device-details', device.id]: []" routerLinkActive="active" class="device"
            title="{{device.description}}">
           <dl class="device-properties">
             <dt>Anzeigename</dt>
-            <dd class="device-displayname">{{device.display_name}}</dd>
+            <dd class="device-displayname" *ngIf="!isEditable(device.id)">{{device.display_name}}</dd>
+            <input type="text" class="device-displayname" *ngIf="isEditable(device.id)" [(ngModel)]="device.display_name" />
             <dt>Gerätetyp</dt>
             <dd class="device-type">{{device.type}}</dd>
             <dt>Gerätename</dt>
@@ -44,11 +45,11 @@
                  alt="{{device.image_alt}}">
           </div>
         </a>
-        <p highlightMouse>baam </p>
+        
         <ul class="device-actions">
-
-          <li><button (click)="changeName" ><img   class="device-edit" src="../../images/edit.png" alt="edit device"></button></li>
-          <li><a href=""><img class="device-remove" src="../../images/remove.png" alt="remove device"></a></li>
+          <li *ngIf="isEditable(device.id)"><a href="javascript:void(0)" (click)="onSaveName(device.id)" ><img   class="device-edit" src="../../images/ok.png" alt="save device"></a></li>
+          <li *ngIf="!isEditable(device.id)"><a href="javascript:void(0)" (click)="onChangeName(device.id)" ><img   class="device-edit" src="../../images/edit.png" alt="edit device"></a></li>
+          <li><a href="javascript:void(0)"><img class="device-remove" src="../../images/remove.png" alt="remove device"></a></li>
         </ul>
       </div>
 

@@ -13,26 +13,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var SaveDeviceNameDirective = (function () {
-    function SaveDeviceNameDirective(_elementRef, _renderer) {
-        this._elementRef = _elementRef;
-        this._renderer = _renderer;
-    }
-    SaveDeviceNameDirective.prototype.onMouseOver = function () {
+    /*@HostListener('mouseenter') onMouseOver(){
         //this._renderer.setElementAttribute(this._elementRef.nativeElement,"src","../../images/ok.png");
         //this._renderer.setElementStyle(this._elementRef.nativeElement, 'background-color','yellow');
         //console.log("sad");
-        this.backgroundColor = "red";
-    };
-    __decorate([
-        core_1.HostListener('mouseenter'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], SaveDeviceNameDirective.prototype, "onMouseOver", null);
-    __decorate([
-        core_1.HostBinding('style.backgroundColor'), 
-        __metadata('design:type', String)
-    ], SaveDeviceNameDirective.prototype, "backgroundColor", void 0);
+        this._elementRef.nativeElement.style.backgroundColor = 'yellow';
+       // this.backgroundColor="red";
+    }
+
+    @HostBinding('style.backgroundColor') backgroundColor:string;*/
+    function SaveDeviceNameDirective(_elementRef, _renderer) {
+        this._elementRef = _elementRef;
+        this._renderer = _renderer;
+        //this._elementRef.nativeElement.style.backgroundColor = 'yellow';
+        console.log("test");
+    }
     SaveDeviceNameDirective = __decorate([
         core_1.Directive({
             selector: '[highlightMouse]'

@@ -7,20 +7,22 @@ import {Directive, HostListener, ElementRef, Renderer, HostBinding} from '@angul
     selector: '[highlightMouse]'
 })
 
-export class SaveDeviceNameDirective{
-    @HostListener('mouseenter') onMouseOver(){
+export class SaveDeviceNameDirective {
+    /*@HostListener('mouseenter') onMouseOver(){
         //this._renderer.setElementAttribute(this._elementRef.nativeElement,"src","../../images/ok.png");
         //this._renderer.setElementStyle(this._elementRef.nativeElement, 'background-color','yellow');
         //console.log("sad");
-        this.backgroundColor="red";
+        this._elementRef.nativeElement.style.backgroundColor = 'yellow';
+       // this.backgroundColor="red";
     }
 
-    @HostBinding('style.backgroundColor') backgroundColor:string;
+    @HostBinding('style.backgroundColor') backgroundColor:string;*/
 
     constructor(
         private _elementRef:ElementRef,
         private _renderer: Renderer
     ){
-
+//this._elementRef.nativeElement.style.backgroundColor = 'yellow';
+console.log("test");
 }
 }

@@ -30,6 +30,13 @@ var DetailsComponent = (function () {
             });
         });
     };
+    DetailsComponent.prototype.hasControlType = function (type) {
+        for (var i = 0; i < this.device.control_units.length; i++) {
+            if (this.device.control_units[i].type == type)
+                return true;
+        }
+        return false;
+    };
     DetailsComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

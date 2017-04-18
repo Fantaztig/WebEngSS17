@@ -5,6 +5,7 @@ import {Component, OnInit} from '@angular/core'
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {DeviceService} from '../services/device.service';
 import {Device} from '../model/device';
+import {ControlType} from '../model/controlType';
 
 @Component ({
     moduleId: module.id,
@@ -29,6 +30,14 @@ export class DetailsComponent implements OnInit{
                 this.dataLoaded = true;
             });
         });
+    }
+
+    hasControlType(type: ControlType) {
+        for(var i = 0; i < this.device.control_units.length; i++) {
+            if(this.device.control_units[i].type == type)
+                return true;
+        }
+        return false;
     }
 
 }

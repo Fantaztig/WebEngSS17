@@ -32,7 +32,7 @@
     <div class="details-holder">
 
       <!-- Steuerung für kontinuierliche Werte -->
-      <div class="details-outer">
+      <div *ngIf="hasControlType(2)" class="details-outer">
         <div class="details-image-container">
           <img class="details-image" src="../../images/placeholder_continuous.PNG">
         </div>
@@ -58,7 +58,7 @@
       </div>
 
       <!-- Steuerung für diskrete Werte -->
-      <div class="details-outer">
+      <div *ngIf="hasControlType(1)" class="details-outer">
         <div class="details-image-container">
           <img class="details-image" src="../../images/placeholder_enum.PNG">
         </div>
@@ -86,7 +86,7 @@
       </div>
 
       <!-- Steuerung für boolesche Werte -->
-      <div class="details-outer">
+      <div *ngIf="hasControlType(0)" class="details-outer">
         <div class="details-image-container">
           <img class="details-image" src="../../images/placeholder_boolean.PNG">
         </div>

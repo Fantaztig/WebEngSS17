@@ -36,7 +36,12 @@ export class OverviewComponent implements OnInit{
     ngOnInit() { 
         this.deviceService.getDevices().then((devices) => {
             this.devices = devices;
+            for(let device of devices){
+                
+                device.draw_image(device.id,device.image,device.control_units);
+            }
         });
     }
+        
 
 }

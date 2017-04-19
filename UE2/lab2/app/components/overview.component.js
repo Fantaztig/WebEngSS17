@@ -31,6 +31,10 @@ var OverviewComponent = (function () {
         var _this = this;
         this.deviceService.getDevices().then(function (devices) {
             _this.devices = devices;
+            for (var _i = 0, devices_1 = devices; _i < devices_1.length; _i++) {
+                var device = devices_1[_i];
+                device.draw_image(device.id, device.image, device.control_units);
+            }
         });
     };
     OverviewComponent = __decorate([

@@ -40,4 +40,12 @@ export class DetailsComponent implements OnInit{
         return false;
     }
 
+    getControl(type: ControlType) {
+        for(var i = 0; i < this.device.control_units.length; i++) {
+            if(this.device.control_units[i].type == type)
+                return this.device.control_units[i];
+        }
+        return undefined;
+    }
+
 }

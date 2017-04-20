@@ -28,6 +28,15 @@ export class DetailsComponent implements OnInit{
             this.deviceService.getDevice(deviceId).then((device) => {
                 this.device = device;
                 this.dataLoaded = true;
+                if(this.hasControlType(0)){
+                    this.booleaninput = this.getControl(0).current;
+                }
+                if(this.hasControlType(1)){
+                    this.discreteinput = this.getControl(1).current;
+                }
+                if(this.hasControlType(2)){
+                    this.continuousinput = this.getControl(2).current;
+                }
             });
         });
     }
@@ -46,6 +55,49 @@ export class DetailsComponent implements OnInit{
                 return this.device.control_units[i];
         }
         return undefined;
+    }
+
+    continuoustext: String = "";
+    booleantext: String = "";
+    discretetext: String = "";
+    continuousinput: number;
+    booleaninput: number;
+    discreteinput: number;
+
+    onSubmit(type: ControlType) {
+        switch (type) {
+            case ControlType.boolean:
+                if(this.booleaninput != this.getControl(0).current){
+                    this.booleantext += new Date().toLocaleString() + " " 
+                    + (this.getControl(0).current ? 'Aktiviert' : 'Deaktiviert') + " -> " 
+                    + (this.booleaninput ? 'Aktiviert' : 'Deaktiviert') + "\n";
+                    this.getControl(0).current = this.booleaninput;
+                }
+                
+                break;
+            case ControlType.continuous:
+            if(this.continuousinput != this.getControl(2).current){
+                    this.continuoustext += new Date().toLocaleString() + " " 
+                    + (this.getControl(2).current) + " -> " 
+                    + (this.continuousinput) + "\n";
+                    this.getControl(2).current = this.continuousinput;
+                }
+                
+                break;
+            case ControlType.enum:
+            if(this.discreteinput != this.getControl(1).current){
+                    this.discretetext += new Date().toLocaleString() + " " 
+                    + (this.getControl(1).current==0 ? 'Aus' : this.getControl(1).current==1 ? 'Standby' : 'Ein') + " -> " 
+                    + (this.discreteinput==0 ? 'Aus' : this.discreteinput==1 ? 'Standby' : 'Ein') + "\n";
+                    this.getControl(1).current = this.discreteinput;
+                }
+                
+                break;
+            default:
+            alert("Unexpected error!");
+                break;
+        }
+
     }
 
 }

@@ -8,7 +8,7 @@
                 <dd class="server-status">Serverstatus:</dd>
                 <dt>Benutzer</dt>
                 <dd>
-                    <span class="system-start-time">Administrator</span>
+                    <span class="system-start-time">{{userName}}</span>
                 </dd>
                 <dt>Systemstartzeit</dt>
                 <dd>
@@ -33,8 +33,17 @@
 
             <!-- Steuerung für kontinuierliche Werte -->
             <div *ngIf="hasControlType(2)" class="details-outer">
-                <div class="details-image-container">
-                    <img class="details-image" src="../../images/placeholder_continuous.PNG">
+                <div  class="details-image-container" >  <!--class="details-image-container" -->
+
+
+                    <canvas baseChart
+                            [datasets]="barChartData"
+                            [labels]="lineChartLabels"
+                            [options]="barChartOptions"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>
@@ -58,7 +67,15 @@
             <!-- Steuerung für diskrete Werte -->
             <div *ngIf="hasControlType(1)" class="details-outer">
                 <div class="details-image-container">
-                    <img class="details-image" src="../../images/placeholder_enum.PNG">
+
+
+                    <canvas baseChart
+                            [data]="polarAreaChartData"
+                            [labels]="polarAreaChartLabels"
+                            [legend]="polarAreaLegend"
+                            [chartType]="barChartType"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>
@@ -85,7 +102,12 @@
             <!-- Steuerung für boolesche Werte -->
             <div *ngIf="hasControlType(0)" class="details-outer">
                 <div class="details-image-container">
-                    <img class="details-image" src="../../images/placeholder_boolean.PNG">
+                    <canvas baseChart
+                            [data]="doughnutChartData"
+                            [labels]="doughnutChartLabels"
+                            [chartType]="barChartType"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>

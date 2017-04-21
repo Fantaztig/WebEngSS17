@@ -17,14 +17,15 @@ var router_1 = require("@angular/router");
 var details_component_1 = require("./details.component");
 var navi_module_1 = require("./navi.module");
 var forms_1 = require('@angular/forms');
+var ng2_charts_1 = require('ng2-charts');
 var DetailsModule = (function () {
     function DetailsModule() {
     }
     DetailsModule = __decorate([
         core_1.NgModule({
-            imports: [common_1.CommonModule, navi_module_1.NaviModule, forms_1.FormsModule, router_1.RouterModule],
+            imports: [common_1.CommonModule, navi_module_1.NaviModule, forms_1.FormsModule, router_1.RouterModule, ng2_charts_1.ChartsModule],
             declarations: [details_component_1.DetailsComponent],
-            exports: [details_component_1.DetailsComponent]
+            exports: [details_component_1.DetailsComponent, ng2_charts_1.ChartsModule]
         }), 
         __metadata('design:paramtypes', [])
     ], DetailsModule);

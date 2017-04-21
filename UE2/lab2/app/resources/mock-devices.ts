@@ -31,8 +31,8 @@ export var DEVICES: Device[] = [
     image_alt: "Thermometer zur Temperatur einstellenanzeige",
     draw_image: drawThermometer,
     control_units: [{
-      name: "Temperatur einstellen", type: ControlType.continuous, min: -10, max: 75, current: 27.4, primary: true
-    }, {name: "Ein-/Ausschalten", type: ControlType.boolean, values: [""], current: 0, primary: false}]
+      name: "Temperatur einstellen", type: ControlType.continuous, min: -10, max: 75, current: 15, primary: true
+    }]
   }
   ,
   {

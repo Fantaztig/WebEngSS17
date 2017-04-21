@@ -25,8 +25,8 @@ exports.DEVICES = [
         image_alt: "Thermometer zur Temperatur einstellenanzeige",
         draw_image: drawThermometer,
         control_units: [{
-                name: "Temperatur einstellen", type: controlType_1.ControlType.continuous, min: -10, max: 75, current: 27.4, primary: true
-            }, { name: "Ein-/Ausschalten", type: controlType_1.ControlType.boolean, values: [""], current: 0, primary: false }]
+                name: "Temperatur einstellen", type: controlType_1.ControlType.continuous, min: -10, max: 75, current: 15, primary: true
+            }]
     },
     {
         id: "38acc35d-40cc-4d56-bccd-da7da5c20cc4",

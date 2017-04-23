@@ -39,16 +39,14 @@ export class DetailsComponent implements OnInit{
                 this.dataLoaded = true;
                 if(this.hasControlType(0)){
                     this.booleaninput = this.getControl(0).current;
-                    this.barChartType='doughnut';
-
+                    this.doughnutChartData[this.booleaninput]++;
                 }
                 if(this.hasControlType(1)){
                     this.discreteinput = this.getControl(1).current;
-                    this.barChartType='polarArea'
+                    this.polarAreaChartData[this.discreteinput]++;
                 }
                 if(this.hasControlType(2)){
                     this.continuousinput = this.getControl(2).current;
-                    this.barChartType='line';
                 }
             });
         });
@@ -79,12 +77,8 @@ export class DetailsComponent implements OnInit{
     continuousinput: number;
     booleaninput: number;
     discreteinput: number;
-    lampeAusschalten:number = 0 ;
-    lampeEinschalten:number = 0 ;
 
-    rolladenEin:number = 0 ;
-    rolladenAus:number = 0 ;
-    rolladenStandby:number = 0 ;
+
 
 
 
@@ -96,17 +90,9 @@ export class DetailsComponent implements OnInit{
                     + (this.getControl(0).current ? 'Aktiviert' : 'Deaktiviert') + " -> " 
                     + (this.booleaninput ? 'Aktiviert' : 'Deaktiviert') + "\n";
                     this.getControl(0).current = this.booleaninput;
+                    
+                    this.doughnutChartData[Number(this.booleaninput)]++;
                 }
-                if(this.booleaninput){
-                    this.lampeEinschalten = this.lampeEinschalten + 1;
-                    this.doughnutChartData[1] = this.lampeEinschalten;
-                    console.log(this.doughnutChartData)
-                }else{
-                    this.lampeAusschalten = this.lampeAusschalten + 1;
-                    this.doughnutChartData[0]=this.lampeAusschalten;
-                    console.log(this.doughnutChartData)
-                }
-
                 break;
             case ControlType.continuous:
             if(this.continuousinput != this.getControl(2).current){
@@ -116,12 +102,9 @@ export class DetailsComponent implements OnInit{
                     this.getControl(2).current = this.continuousinput;
                     this.barChartData[0].data[this.barChartData[0].data.length]=this.continuousinput;
 
-                    this.lineChartLabels[this.lineChartLabels.length]= (new Date().toLocaleString()).substring(11,8);
-
+                    this.lineChartLabels[this.lineChartLabels.length]= (new Date().toLocaleString()).substring(11);
                 }
 
-
-                
                 break;
             case ControlType.enum:
             if(this.discreteinput != this.getControl(1).current){
@@ -129,26 +112,18 @@ export class DetailsComponent implements OnInit{
                     + (this.getControl(1).current==0 ? 'Aus' : this.getControl(1).current==1 ? 'Standby' : 'Ein') + " -> " 
                     + (this.discreteinput==0 ? 'Aus' : this.discreteinput==1 ? 'Standby' : 'Ein') + "\n";
                     this.getControl(1).current = this.discreteinput;
+
+                    this.polarAreaChartData[this.discreteinput]++;
                 }
 
-                if(this.getControl(1).current == 0){
-                    this.rolladenAus = this.rolladenAus+1;
-                    this.polarAreaChartData[0]=this.rolladenAus;
-                }else{
-                    if(this.getControl(1).current == 1){
-                        this.rolladenStandby = this.rolladenStandby+1;
-                        this.polarAreaChartData[2]=this.rolladenStandby;
-                    }else{
-                        this.rolladenEin = this.rolladenEin+1;
-                        this.polarAreaChartData[1]=this.rolladenEin;
-                    }
-                }
                 break;
             default:
             alert("Unexpected error!");
                 break;
         }
-        this.chart.chart.update();
+        this.barChartData = this.barChartData.slice();
+        this.polarAreaChartData = this.polarAreaChartData.slice();
+        this.doughnutChartData = this.doughnutChartData.slice();
     }
     public lineChartLabels:Array<any> = [];
     private barChartOptions: any = {
@@ -157,7 +132,6 @@ export class DetailsComponent implements OnInit{
         responsive: true
     };
 
-    private barChartType: string ;
     private barChartLegend: boolean = true;
 
     private barChartData: any[] = [
@@ -178,7 +152,7 @@ export class DetailsComponent implements OnInit{
     public doughnutChartLabels:string[] = ['Aus', 'An'];
     public doughnutChartData:number[] = [ 0, 0];
 
-    public polarAreaChartLabels:string[] = ['Aus', 'Ein', 'Standby'];
+    public polarAreaChartLabels:string[] = ['Aus', 'Standby', 'Ein'];
     public polarAreaChartData:number[] = [0,0,0] ;
     public polarAreaLegend:boolean = true;
 

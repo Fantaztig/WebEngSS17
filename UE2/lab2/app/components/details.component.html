@@ -33,17 +33,11 @@
 
             <!-- Steuerung für kontinuierliche Werte -->
             <div *ngIf="hasControlType(2)" class="details-outer">
-                <div  class="details-image-container" >  <!--class="details-image-container" -->
+                <div class="details-image-container">
+                    <!--class="details-image-container" -->
 
 
-                    <canvas baseChart
-                            [datasets]="barChartData"
-                            [labels]="lineChartLabels"
-                            [options]="barChartOptions"
-                            [legend]="barChartLegend"
-                            [chartType]="barChartType"
-                            (chartHover)="chartHovered($event)"
-                            (chartClick)="chartClicked($event)"></canvas>
+                    <canvas baseChart [datasets]="barChartData" [labels]="lineChartLabels" [options]="barChartOptions" [legend]="barChartLegend" chartType="line"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>
@@ -69,13 +63,7 @@
                 <div class="details-image-container">
 
 
-                    <canvas baseChart
-                            [data]="polarAreaChartData"
-                            [labels]="polarAreaChartLabels"
-                            [legend]="polarAreaLegend"
-                            [chartType]="barChartType"
-                            (chartHover)="chartHovered($event)"
-                            (chartClick)="chartClicked($event)"></canvas>
+                    <canvas baseChart [data]="polarAreaChartData" [labels]="polarAreaChartLabels" [legend]="polarAreaLegend" chartType="polarArea"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>
@@ -102,12 +90,7 @@
             <!-- Steuerung für boolesche Werte -->
             <div *ngIf="hasControlType(0)" class="details-outer">
                 <div class="details-image-container">
-                    <canvas baseChart
-                            [data]="doughnutChartData"
-                            [labels]="doughnutChartLabels"
-                            [chartType]="barChartType"
-                            (chartHover)="chartHovered($event)"
-                            (chartClick)="chartClicked($event)"></canvas>
+                    <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" chartType="doughnut"></canvas>
                 </div>
                 <div class="details-data">
                     <label class="accessibility" for="details-log">Letzte Werteänderungen</label>

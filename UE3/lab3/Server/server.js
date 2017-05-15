@@ -7,6 +7,7 @@ var app = express();
 var fs = require("fs");
 var expressWs = require('express-ws')(app);
 var http = require('http');
+var apiRouter = express.Router();
 
 var simulation = require('./simulation.js');
 var bodyParser = require('body-parser');
@@ -17,6 +18,7 @@ var uuid = require('uuid');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
+app.use('/api',apiRouter);
 
 var aWss = expressWs.getWss('/');
 
@@ -41,8 +43,39 @@ var devices = null;
  *      Vergessen Sie auch nicht, dass jeder Client mit aktiver Verbindung über alle Aktionen via Websocket zu informieren ist.
  *      Bei der Anlage neuer Geräte wird eine neue ID benötigt. Verwenden Sie dafür eine uuid (https://www.npmjs.com/package/uuid, Bibliothek ist bereits eingebunden).
  */
+apiRouter.use(function(req, res, next) {
 
-app.post("/updateCurrent", function (req, res) {
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token || req.headers['token'];
+
+  // decode token
+  if (token) {
+
+    // verifies secret and checks exp
+    jwt.verify(token, 'secret', function(err, decoded) {      
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;    
+        next();
+      }
+    });
+
+  } else {
+
+    // if there is no token
+    // return an error
+    return res.status(403).send({ 
+        success: false, 
+        message: 'No token provided.' 
+    });
+
+  }
+});
+ 
+ 
+apiRouter.post("/updateCurrent", function (req, res) {
     "use strict";
     //TODO Vervollständigen Sie diese Funktion, welche den aktuellen Wert eines Gerätes ändern soll
     /*
@@ -64,7 +97,7 @@ app.post("/updateCurrent", function (req, res) {
 	 });
 });
 
-app.get("/getDevices" , function (req, res){
+apiRouter.get("/getDevices" , function (req, res){
 	if(devices == null){
 		res.status(500).end;
 	} else {
@@ -73,7 +106,7 @@ app.get("/getDevices" , function (req, res){
 });
 
 //erwartet device per json
-app.post("/addDevice" , function (req, res){
+apiRouter.post("/addDevice" , function (req, res){
 	var data = req.body;
 	devices['devices'].push(data);
 	res.status(200).json({
@@ -82,7 +115,7 @@ app.post("/addDevice" , function (req, res){
 });
 
 //erwartet id per json
-app.post("/deleteDevice" , function (req, res){
+apiRouter.post("/deleteDevice" , function (req, res){
 	var data = req.body;
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id == data.id){
@@ -98,7 +131,7 @@ app.post("/deleteDevice" , function (req, res){
 });
 
 //Erwartet device per json
-app.post("/editDevice" , function (req, res){
+apiRouter.post("/editDevice" , function (req, res){
 	var data = req.body;
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id === data.id){
@@ -113,7 +146,7 @@ app.post("/editDevice" , function (req, res){
 	 });
 });
 
-app.get("/status" , function(req, res){
+apiRouter.get("/status" , function(req, res){
 	//TODO Startzeit und failed logins speichern!
 	res.status(200).json({
 		running_since : "01.01.1970",
@@ -127,6 +160,7 @@ app.post("/auth", function(req, res) {
         jwt.sign({ foo: 'bar' }, 'secret', {}, function(err, token) {
             if(err) {
                 console.error(err);
+				res.status(403);
             }
             res.json({
                 token: token
@@ -137,7 +171,7 @@ app.post("/auth", function(req, res) {
     }
 })
 
-app.post("/me/change_password", function(req, res) {
+apiRouter.post("/me/change_password", function(req, res) {
     var passwords = req.body;
     var auth_header = req.get('Authentication');
     var token = auth_header.split(" ")[1];

@@ -50,6 +50,75 @@ app.post("/updateCurrent", function (req, res) {
      *      simulation.updatedDeviceValue(device, control_unit, Number(new_value));
      * Diese Funktion verändert gleichzeitig auch den aktuellen Wert des Gerätes, Sie müssen diese daher nur mit den korrekten Werten aufrufen.
      */
+	 var data = JSON.parse(req.body);
+	 for(var i = 0; i < devices.legnth; i++){
+		 if(devices[i].id === data.id){
+			 simulation.updateDeviceValue(devices[i], data.control_unit, Number(data.new_value));
+			 res.json({
+                    status: "ok"
+                });
+		 }
+	 }
+	 res.status(400).json({
+		 status: "device not found"
+	 });
+});
+
+app.get("/getDevices" , function (req, res){
+	if(devices == null){
+		res.status(500).end;
+	} else {
+		res.end( JSON.stringify(devices));
+	}
+});
+
+//erwartet device per json
+app.post("/addDevice" , function (req, res){
+	var data = req.body;
+	devices['devices'].push(data);
+	res.status(200).json({
+		status: "ok"
+    });
+});
+
+//erwartet id per json
+app.post("/deleteDevice" , function (req, res){
+	var data = req.body;
+	 for(var i = 0; i < devices["devices"].length; i++){
+		 if(devices["devices"][i].id == data.id){
+			 devices["devices"].splice(i,1);
+			 res.status(200).json({
+                    status: "ok"
+                });
+		 }
+	 }
+	 res.status(400).json({
+		 status: "device not found"
+	 });
+});
+
+//Erwartet device per json
+app.post("/editDevice" , function (req, res){
+	var data = req.body;
+	 for(var i = 0; i < devices["devices"].length; i++){
+		 if(devices["devices"][i].id === data.id){
+			 devices["devices"][i] = data;
+			 res.status(200).json({
+                    status: "ok"
+                });
+		 }
+	 }
+	 res.status(400).json({
+		 status: "device not found!"
+	 });
+});
+
+app.get("/status" , function(req, res){
+	//TODO Startzeit und failed logins speichern!
+	res.status(200).json({
+		running_since : "01.01.1970",
+		failed_logins : "0"
+	});
 });
 
 app.post("/auth", function(req, res) {

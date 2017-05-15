@@ -13,7 +13,7 @@ exports.DEVICES = [
         control_units: [{
                 name: "Temperatur einstellen", type: controlType_1.ControlType.continuous, min: 0, max: 50, current: 0,
                 primary: true
-            }],
+            }, { name: "Ein-/Ausschalten", type: controlType_1.ControlType.boolean, values: [""], current: 0, primary: false }],
     },
     {
         id: "19ff7d47-bd80-4a5d-adfb-bc77558facad",

@@ -25,11 +25,6 @@ var DetailsComponent = (function () {
         this.continuoustext = "";
         this.booleantext = "";
         this.discretetext = "";
-        this.lampeAusschalten = 0;
-        this.lampeEinschalten = 0;
-        this.rolladenEin = 0;
-        this.rolladenAus = 0;
-        this.rolladenStandby = 0;
         this.lineChartLabels = [];
         this.barChartOptions = {
             scaleShowVerticalLines: true,
@@ -42,7 +37,7 @@ var DetailsComponent = (function () {
         ];
         this.doughnutChartLabels = ['Aus', 'An'];
         this.doughnutChartData = [0, 0];
-        this.polarAreaChartLabels = ['Aus', 'Ein', 'Standby'];
+        this.polarAreaChartLabels = ['Aus', 'Standby', 'Ein'];
         this.polarAreaChartData = [0, 0, 0];
         this.polarAreaLegend = true;
     }
@@ -55,15 +50,14 @@ var DetailsComponent = (function () {
                 _this.dataLoaded = true;
                 if (_this.hasControlType(0)) {
                     _this.booleaninput = _this.getControl(0).current;
-                    _this.barChartType = 'doughnut';
+                    _this.doughnutChartData[_this.booleaninput]++;
                 }
                 if (_this.hasControlType(1)) {
                     _this.discreteinput = _this.getControl(1).current;
-                    _this.barChartType = 'polarArea';
+                    _this.polarAreaChartData[_this.discreteinput]++;
                 }
                 if (_this.hasControlType(2)) {
                     _this.continuousinput = _this.getControl(2).current;
-                    _this.barChartType = 'line';
                 }
             });
         });
@@ -90,16 +84,7 @@ var DetailsComponent = (function () {
                         + (this.getControl(0).current ? 'Aktiviert' : 'Deaktiviert') + " -> "
                         + (this.booleaninput ? 'Aktiviert' : 'Deaktiviert') + "\n";
                     this.getControl(0).current = this.booleaninput;
-                }
-                if (this.booleaninput) {
-                    this.lampeEinschalten = this.lampeEinschalten + 1;
-                    this.doughnutChartData[1] = this.lampeEinschalten;
-                    console.log(this.doughnutChartData);
-                }
-                else {
-                    this.lampeAusschalten = this.lampeAusschalten + 1;
-                    this.doughnutChartData[0] = this.lampeAusschalten;
-                    console.log(this.doughnutChartData);
+                    this.doughnutChartData[Number(this.booleaninput)]++;
                 }
                 break;
             case controlType_1.ControlType.continuous:
@@ -109,7 +94,7 @@ var DetailsComponent = (function () {
                         + (this.continuousinput) + "\n";
                     this.getControl(2).current = this.continuousinput;
                     this.barChartData[0].data[this.barChartData[0].data.length] = this.continuousinput;
-                    this.lineChartLabels[this.lineChartLabels.length] = (new Date().toLocaleString()).substring(11, 8);
+                    this.lineChartLabels[this.lineChartLabels.length] = (new Date().toLocaleString()).substring(11);
                 }
                 break;
             case controlType_1.ControlType.enum:
@@ -118,27 +103,16 @@ var DetailsComponent = (function () {
                         + (this.getControl(1).current == 0 ? 'Aus' : this.getControl(1).current == 1 ? 'Standby' : 'Ein') + " -> "
                         + (this.discreteinput == 0 ? 'Aus' : this.discreteinput == 1 ? 'Standby' : 'Ein') + "\n";
                     this.getControl(1).current = this.discreteinput;
-                }
-                if (this.getControl(1).current == 0) {
-                    this.rolladenAus = this.rolladenAus + 1;
-                    this.polarAreaChartData[0] = this.rolladenAus;
-                }
-                else {
-                    if (this.getControl(1).current == 1) {
-                        this.rolladenStandby = this.rolladenStandby + 1;
-                        this.polarAreaChartData[2] = this.rolladenStandby;
-                    }
-                    else {
-                        this.rolladenEin = this.rolladenEin + 1;
-                        this.polarAreaChartData[1] = this.rolladenEin;
-                    }
+                    this.polarAreaChartData[this.discreteinput]++;
                 }
                 break;
             default:
                 alert("Unexpected error!");
                 break;
         }
-        this.chart.chart.update();
+        this.barChartData = this.barChartData.slice();
+        this.polarAreaChartData = this.polarAreaChartData.slice();
+        this.doughnutChartData = this.doughnutChartData.slice();
     };
     // events
     DetailsComponent.prototype.chartClicked = function (e) {

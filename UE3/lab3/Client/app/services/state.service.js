@@ -10,27 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var xhr_service_1 = require('./xhr.service');
-var AuthService = (function () {
-    function AuthService(xhrservice) {
-        this.xhrservice = xhrservice;
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/map');
+var StateService = (function () {
+    function StateService(http) {
+        this.http = http;
+        this.url = localStorage.getItem("api");
     }
-    AuthService.prototype.authenticate = function (username, password) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.xhrservice.sendJSON("POST", "/auth", { username: username, password: password }).subscribe(function (res) {
-                sessionStorage.setItem("token", res.token);
-                resolve(res.token);
-            }, function (err) {
-                reject();
-            });
-        });
+    StateService.prototype.getState = function () {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.get(this.url + "/api/status", options).map(function (res) { return res.json(); });
     };
-    AuthService = __decorate([
+    StateService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [xhr_service_1.XhrService])
-    ], AuthService);
-    return AuthService;
+        __metadata('design:paramtypes', [http_1.Http])
+    ], StateService);
+    return StateService;
 }());
-exports.AuthService = AuthService;
-//# sourceMappingURL=auth.service.js.map
+exports.StateService = StateService;
+//# sourceMappingURL=state.service.js.map

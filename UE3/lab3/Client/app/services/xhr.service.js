@@ -15,7 +15,7 @@ require('rxjs/add/operator/toPromise');
 require('rxjs/add/observable/fromPromise');
 var XhrService = (function () {
     function XhrService() {
-        this.url = "http://localhost:8081";
+        this.url = localStorage.getItem("api");
     }
     XhrService.prototype.sendJSON = function (method, path, data) {
         var _this = this;
@@ -24,8 +24,8 @@ var XhrService = (function () {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 1) {
                     var token = sessionStorage.getItem("token");
-                    if (token != null || token != undefined) {
-                        xhr.setRequestHeader("Authentication", "Bearer " + token);
+                    if (token != null && token != undefined) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                     }
                     xhr.setRequestHeader("Content-Type", "application/json");
                 }

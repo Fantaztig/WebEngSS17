@@ -16,15 +16,15 @@ var LoginComponent = (function () {
         this.router = router;
         this.authService = authService;
         this.loginError = false;
+        localStorage.setItem("api", "http://localhost:8081");
     }
     LoginComponent.prototype.onSubmit = function (form) {
         var _this = this;
         //TODO Überprüfen Sie die Login-Daten über die REST-Schnittstelle und leiten Sie den Benutzer bei Erfolg auf die Overview-Seite weiter
-        this.authService.authenticate(form.value.username, form.value.password)
-            .then(function (res) {
+        this.authService.authenticate(form.value.username, form.value.password).subscribe(function (res) {
+            localStorage.setItem("token", res.token);
             _this.router.navigate(['/overview']);
-        })
-            .catch(function (err) {
+        }, function (err) {
             _this.loginError = true;
         });
     };

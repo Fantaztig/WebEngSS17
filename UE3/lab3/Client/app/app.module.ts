@@ -23,6 +23,7 @@ import {OverlayComponent} from "./components/overlay.component";
 
 import {UserService} from './services/user.service';
 import {XhrService} from './services/xhr.service';
+import {StateService} from './services/state.service';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import {XhrService} from './services/xhr.service';
     DeviceService,
     DeviceParserService,
     UserService,
-    XhrService
+    XhrService,
+    StateService
   ],
   bootstrap: [AppComponent]
 })

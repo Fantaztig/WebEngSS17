@@ -10,35 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var xhr_service_1 = require('./xhr.service');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/map');
 var UserService = (function () {
-    function UserService(xhrservice) {
-        this.xhrservice = xhrservice;
+    function UserService(http) {
+        this.http = http;
+        this.url = localStorage.getItem("api");
     }
     UserService.prototype.authenticate = function (username, password) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.xhrservice.sendJSON("POST", "/auth", { username: username, password: password }).subscribe(function (res) {
-                sessionStorage.setItem("token", res.token);
-                resolve(res.token);
-            }, function (err) {
-                reject();
-            });
-        });
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url + "/auth", { username: username, password: password }, options).map(function (res) { return res.json(); });
     };
     UserService.prototype.changePassword = function (old_password, new_password, repeat_password) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.xhrservice.sendJSON("POST", "/me/change_password", { old_password: old_password, new_password: new_password, repeat_password: repeat_password }).subscribe(function (res) {
-                resolve();
-            }, function (err) {
-                reject();
-            });
-        });
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url + "/api/me/change_password", { old_password: old_password, new_password: new_password, repeat_password: repeat_password }, options).map(function (res) { return res.json(); });
     };
     UserService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [xhr_service_1.XhrService])
+        __metadata('design:paramtypes', [http_1.Http])
     ], UserService);
     return UserService;
 }());

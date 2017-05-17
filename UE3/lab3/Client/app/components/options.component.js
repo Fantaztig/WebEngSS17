@@ -39,15 +39,22 @@ var OptionsComponent = (function () {
         if (!form) {
             return;
         }
-        this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"])
-            .then(function (res) {
+        this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"]).subscribe(function (res) {
             _this.updateError = false;
             _this.router.navigate(['/overview']);
-        })
-            .catch(function (err) {
+        }, function (err) {
             _this.updateError = true;
             form.resetForm();
         });
+        /* this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"])
+             .then(res => {
+                 this.updateError = false;
+                 this.router.navigate(['/overview'])
+             })
+             .catch(err => {
+                 this.updateError = true;
+                 form.resetForm();
+             })*/
     };
     OptionsComponent = __decorate([
         core_1.Component({

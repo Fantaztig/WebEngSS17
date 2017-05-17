@@ -9,12 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var mock_device_1 = require('../resources/mock-device');
 var device_parser_service_1 = require('./device-parser.service');
-require('rxjs/add/operator/toPromise');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/map');
+require('rxjs/add/observable/of');
 var DeviceService = (function () {
-    function DeviceService(parserService) {
+    function DeviceService(parserService, http) {
         this.parserService = parserService;
+        this.http = http;
+        this.url = localStorage.getItem("api");
     }
     //TODO Sie können dieses Service benutzen, um alle REST-Funktionen für die Smart-Devices zu implementieren
     DeviceService.prototype.getDevices = function () {
@@ -24,7 +27,10 @@ var DeviceService = (function () {
          * Verwenden Sie das DeviceParserService um die via REST ausgelesenen Geräte umzuwandeln.
          * Das Service ist dabei bereits vollständig implementiert und kann wie unten demonstriert eingesetzt werden.
          */
-        return Promise.resolve(mock_device_1.DEVICES).then(function (devices) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.get(this.url + "/api/devices", options).map(function (res) {
+            var devices = res.json().devices;
             for (var i = 0; i < devices.length; i++) {
                 devices[i] = _this.parserService.parseDevice(devices[i]);
             }
@@ -32,12 +38,40 @@ var DeviceService = (function () {
         });
     };
     DeviceService.prototype.getDevice = function (id) {
-        return this.getDevices()
-            .then(function (devices) { return devices.find(function (device) { return device.id === id; }); });
+        var _this = this;
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.get(this.url + "/api/devices/" + id, options).map(function (res) {
+            var device = _this.parserService.parseDevice(res.json());
+            return device;
+        });
+    };
+    DeviceService.prototype.addDevice = function (device) {
+        var _this = this;
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url + "/api/devices", JSON.stringify(device), options).map(function (res) {
+            var device = _this.parserService.parseDevice(res.json());
+            return device;
+        });
+    };
+    DeviceService.prototype.deleteDevice = function (id) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.delete(this.url + "/api/devices/" + id, options).map(function (res) {
+            res = res.json();
+        });
+    };
+    DeviceService.prototype.changeDevice = function (device) {
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.put(this.url + "/api/devices/" + device.id, JSON.stringify(device), options).map(function (res) {
+            res = res.json();
+        });
     };
     DeviceService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [device_parser_service_1.DeviceParserService])
+        __metadata('design:paramtypes', [device_parser_service_1.DeviceParserService, http_1.Http])
     ], DeviceService);
     return DeviceService;
 }());

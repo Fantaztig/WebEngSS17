@@ -10,7 +10,7 @@ import 'rxjs/add/observable/fromPromise';
 @Injectable()
 export class XhrService {
 
-    private url: string = "http://localhost:8081";
+    private url: string = localStorage.getItem("api") ;
 
     sendJSON(method: string, path: string, data: any): Observable<any> {
         return Observable.fromPromise(new Promise((resolve, reject) => {
@@ -18,8 +18,8 @@ export class XhrService {
             xhr.onreadystatechange = function () {
                 if(xhr.readyState === 1) {
                     var token = sessionStorage.getItem("token");
-                    if(token != null || token != undefined) {
-                        xhr.setRequestHeader("Authentication", "Bearer " + token)
+                    if(token != null && token != undefined) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token)
                     }
                     xhr.setRequestHeader("Content-Type", "application/json");
                 } else if (xhr.readyState === 4) {

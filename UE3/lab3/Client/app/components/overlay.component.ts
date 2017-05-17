@@ -46,6 +46,44 @@ export class OverlayComponent implements OnInit {
    * @param form
    */
   onSubmit(form: NgForm): void {
+
+    let device: Device;
+    device.display_name = form.value.displayname;
+    device.type = form.value["type-input"];
+    device.type_name = form.value.typename;
+
+    /*let controlUnit: ControlUnit;
+    controlUnit.name = form.value.elementname;
+    switch(this.controlUnitType_selected) {
+      case "Ein/Ausschalter":
+        controlUnit.type = ControlType.boolean;
+        break;
+      case "Diskrete Werte":
+        controlUnit.type = ControlType.enum;
+        break;
+      case "Kontinuierlicher Wert":
+        controlUnit.type = ControlType.continuous;
+        break;
+    }*/
+
+    /*if(form.value["minimum-value"] && form.value["maximum-value"]) {
+      controlUnit.min = form.value["minimum-value"];
+      controlUnit.max = form.value["maximum-value"];
+    }
+
+    if(form.value["discrete-values"]) {
+      let values = form.value["discrete-values"].split(",");
+      for(var i = 0; i < values.length; i++) {
+        values[i] = values[i].trim();
+      }
+      controlUnit.values = values;
+    }*/
+
+    //device.control_units;
+    //device.control_units.push(controlUnit);
+
+    //this.deviceService.addDevice(device);
+
     form.reset();
     this.overviewComponent.closeAddDeviceWindow();
 

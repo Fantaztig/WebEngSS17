@@ -50,13 +50,13 @@ var DevicesComponent = (function () {
      */
     DevicesComponent.prototype.listDevices = function () {
         var _this = this;
-        this.deviceService.getDevices().then(function (devices) {
-            _this.devices = devices;
+        this.deviceService.getDevices().subscribe(function (res) {
+            _this.devices = res;
             _this.edit = new Array(_this.devices.length);
             for (var i = 0; i < _this.devices.length; i++) {
                 _this.edit[i] = { id: _this.devices[i].id, value: false };
             }
-            _this.device_num = devices.length;
+            _this.device_num = _this.devices.length;
         });
     };
     /**
@@ -106,6 +106,7 @@ var DevicesComponent = (function () {
     DevicesComponent.prototype.finishEdit = function (device) {
         this.showLabel(device);
         //TODO Lesen Sie den geänderten Anzeigenamen aus und speichern Sie diesen über die REST-Schnittstelle
+        this.deviceService.changeDevice(device).subscribe(function (res) { });
     };
     /**
      * Entfernt das angegebene Gerät
@@ -113,6 +114,8 @@ var DevicesComponent = (function () {
      */
     DevicesComponent.prototype.removeDevice = function (device) {
         //TODO Löschen Sie das angegebene Geräte über die REST-Schnittstelle
+        this.deviceService.deleteDevice(device.id).subscribe(function (res) {
+        });
     };
     /**
      * Setz das Input-Feld wieder auf ein Label zurück und beendet so das Bearbeiten

@@ -31,6 +31,7 @@ var boolean_device_details_component_1 = require("./components/boolean-device-de
 var overlay_component_1 = require("./components/overlay.component");
 var user_service_1 = require('./services/user.service');
 var xhr_service_1 = require('./services/xhr.service');
+var state_service_1 = require('./services/state.service');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -63,7 +64,8 @@ var AppModule = (function () {
                 device_service_1.DeviceService,
                 device_parser_service_1.DeviceParserService,
                 user_service_1.UserService,
-                xhr_service_1.XhrService
+                xhr_service_1.XhrService,
+                state_service_1.StateService
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

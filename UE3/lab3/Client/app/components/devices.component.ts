@@ -59,13 +59,13 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
      * Liest alle Geräte aus und initialisiert ein Flag zum Editierungs-Status dieses Gerätes
      */
     listDevices() {
-        this.deviceService.getDevices().then(devices => {
-            this.devices = devices;
+        this.deviceService.getDevices().subscribe(res => {
+            this.devices = res;
             this.edit = new Array(this.devices.length);
             for (let i = 0; i < this.devices.length; i++) {
                 this.edit[i] = {id: this.devices[i].id, value: false};
             }
-            this.device_num = devices.length;
+            this.device_num = this.devices.length;
         });
     }
 
@@ -124,6 +124,7 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
     finishEdit(device: Device): void {
         this.showLabel(device);
         //TODO Lesen Sie den geänderten Anzeigenamen aus und speichern Sie diesen über die REST-Schnittstelle
+        this.deviceService.changeDevice(device).subscribe(res => {});
     }
 
     /**
@@ -132,6 +133,10 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
      */
     removeDevice(device: Device): void {
         //TODO Löschen Sie das angegebene Geräte über die REST-Schnittstelle
+        this.deviceService.deleteDevice(device.id).subscribe(
+            res => {
+
+            });
     }
 
     /**

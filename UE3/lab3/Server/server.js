@@ -45,8 +45,10 @@ var devices = null;
  */
 apiRouter.use(function(req, res, next) {
 
-  // check header or url parameters or post parameters for token
-  var token = req.body.token || req.query.token || req.headers['token'];
+
+console.log(req.headers);
+  // check authorization header
+  var token = req.headers['authorization'].split(" ")[1];
 
   // decode token
   if (token) {
@@ -97,7 +99,7 @@ apiRouter.post("/updateCurrent", function (req, res) {
 	 });
 });
 
-apiRouter.get("/getDevices" , function (req, res){
+apiRouter.get("/devices" , function (req, res){
 	if(devices == null){
 		res.status(500).end;
 	} else {
@@ -105,8 +107,19 @@ apiRouter.get("/getDevices" , function (req, res){
 	}
 });
 
-//erwartet device per json
-apiRouter.post("/addDevice" , function (req, res){
+apiRouter.get("/devices/:uuid" , function (req, res){
+	var uuid = req.params.uuid;
+	 for(var i = 0; i < devices["devices"].length; i++){
+		 if(devices["devices"][i].id == uuid){
+			 res.json(devices["devices"][i]);
+		 }
+	 }
+	 res.status(400).json({
+		 status: "device not found"
+	 });
+});
+
+apiRouter.post("/devices" , function (req, res){
 	var data = req.body;
 	devices['devices'].push(data);
 	res.status(200).json({
@@ -114,11 +127,10 @@ apiRouter.post("/addDevice" , function (req, res){
     });
 });
 
-//erwartet id per json
-apiRouter.post("/deleteDevice" , function (req, res){
-	var data = req.body;
+apiRouter.delete("/devices/:uuid" , function (req, res){
+	var uuid = req.params.uuid;
 	 for(var i = 0; i < devices["devices"].length; i++){
-		 if(devices["devices"][i].id == data.id){
+		 if(devices["devices"][i].id == uuid){
 			 devices["devices"].splice(i,1);
 			 res.status(200).json({
                     status: "ok"
@@ -130,11 +142,11 @@ apiRouter.post("/deleteDevice" , function (req, res){
 	 });
 });
 
-//Erwartet device per json
-apiRouter.post("/editDevice" , function (req, res){
-	var data = req.body;
+apiRouter.put("/devices/:uuid" , function (req, res){
+	var uuid = req.params.uuid;
+    var data = req.body;
 	 for(var i = 0; i < devices["devices"].length; i++){
-		 if(devices["devices"][i].id === data.id){
+		 if(devices["devices"][i].id === uuid){
 			 devices["devices"][i] = data;
 			 res.status(200).json({
                     status: "ok"
@@ -149,7 +161,7 @@ apiRouter.post("/editDevice" , function (req, res){
 apiRouter.get("/status" , function(req, res){
 	//TODO Startzeit und failed logins speichern!
 	res.status(200).json({
-		running_since : "01.01.1970",
+		server_start : "01.01.1970 20:11",
 		failed_logins : "0"
 	});
 });
@@ -160,7 +172,7 @@ app.post("/auth", function(req, res) {
         jwt.sign({ foo: 'bar' }, 'secret', {}, function(err, token) {
             if(err) {
                 console.error(err);
-				res.status(403);
+                res.status(403);
             }
             res.json({
                 token: token
@@ -173,29 +185,18 @@ app.post("/auth", function(req, res) {
 
 apiRouter.post("/me/change_password", function(req, res) {
     var passwords = req.body;
-    var auth_header = req.get('Authentication');
-    var token = auth_header.split(" ")[1];
-    console.log(passwords);
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if(err) {
-            console.error(err);
-            res.status(401).json({
-                status: "unauthorized"
+    if(passwords.old_password == app.settings.password && passwords.new_password == passwords.repeat_password) {
+        app.set('password', passwords.new_password);
+        writeUser(function(){
+            res.json({
+                status: "ok"
             })
-        } else {
-            if(passwords.old_password == app.settings.password && passwords.new_password == passwords.repeat_password) {
-                app.set('password', passwords.new_password);
-                res.json({
-                    status: "ok"
-                })
-                console.log("dsfasd")
-            } else {
-                res.status(422).json({
-                    status: "failed"
-                })
-            }
-        }
-    })
+        })
+    } else {
+        res.status(422).json({
+            status: "failed"
+        })
+    }
 })
 
 function readUser() {
@@ -206,6 +207,16 @@ function readUser() {
         app.set('username', lines[0].split(": ")[1]).toString().trim();
         app.set('password', lines[1].split(": ")[1]).toString().trim();
     });
+}
+
+function writeUser(callback) {
+    fs.writeFile("./resources/login.config", "username: " + app.get('username') + "\r\npassword: " + app.get("password"), function(err) {
+        if(err) {
+            return console.log(err);
+        }
+
+        callback();
+    }); 
 }
 
 function readDevices() {

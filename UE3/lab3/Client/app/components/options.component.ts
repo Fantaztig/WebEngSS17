@@ -43,7 +43,18 @@ export class OptionsComponent implements OnInit {
             return;
         }
 
-        this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"])
+        this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"]).subscribe(
+            res => {
+                this.updateError = false;
+                this.router.navigate(['/overview'])
+            },
+            err => {
+                this.updateError = true;
+                form.resetForm();
+            }
+        )
+
+       /* this.userService.changePassword(form.value["old-password"], form.value["new-password"], form.value["repeat-password"])
             .then(res => {
                 this.updateError = false;
                 this.router.navigate(['/overview'])
@@ -51,7 +62,7 @@ export class OptionsComponent implements OnInit {
             .catch(err => {
                 this.updateError = true;
                 form.resetForm();
-            })
+            })*/
 
     }
 

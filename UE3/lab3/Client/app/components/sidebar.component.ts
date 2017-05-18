@@ -17,7 +17,6 @@ export class SidebarComponent implements OnInit{
     //TODO Lesen Sie über die REST-Schnittstelle den Status des Servers aus und speichern Sie diesen in obigen Variablen
     this.stateService.getState().subscribe(
       res => {
-        console.log(res)
         this.failed_logins = res.failed_logins;
         this.server_start = res.server_start;
       }

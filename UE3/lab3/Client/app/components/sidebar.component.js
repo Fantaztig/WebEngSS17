@@ -20,7 +20,6 @@ var SidebarComponent = (function () {
         var _this = this;
         //TODO Lesen Sie über die REST-Schnittstelle den Status des Servers aus und speichern Sie diesen in obigen Variablen
         this.stateService.getState().subscribe(function (res) {
-            console.log(res);
             _this.failed_logins = res.failed_logins;
             _this.server_start = res.server_start;
         });

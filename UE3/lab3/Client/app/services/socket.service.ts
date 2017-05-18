@@ -1,0 +1,26 @@
+/* created by Paul Proell */
+
+import { Injectable } from '@angular/core';
+import { Subject, Observer, Observable } from 'rxjs/Rx';
+@Injectable()
+export class SocketService{
+  public createWebsocket(): Subject<MessageEvent> {
+        let socket = new WebSocket('ws://localhost:8081/');
+        let observable = Observable.create(
+                    (observer: Observer<MessageEvent>) => {
+                        socket.onmessage = observer.next.bind(observer);
+                        socket.onerror = observer.error.bind(observer);
+                        socket.onclose = observer.complete.bind(observer);
+                        return socket.close.bind(socket);
+                    }
+        );
+        let observer = {
+                next: (data: Object) => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        console.log(data)
+                    }
+                }
+        };
+        return Subject.create(observer, observable);
+  }
+}

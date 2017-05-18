@@ -10,15 +10,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var device_service_1 = require("../services/device.service");
+var socket_service_1 = require("../services/socket.service");
 var DevicesComponent = (function () {
-    function DevicesComponent(deviceService) {
+    function DevicesComponent(deviceService, socketService) {
         this.deviceService = deviceService;
+        this.socketService = socketService;
         this.update = true;
         this.device_num = 0;
     }
     DevicesComponent.prototype.ngOnInit = function () {
         this.update = true;
         this.listDevices();
+        /*this.socketService.createWebsocket().subscribe(
+            msg => {
+                console.log(msg);
+            }
+        )*/
+        var socket = new WebSocket('ws://localhost:8081/api/test');
+        socket.onmessage = function (data) {
+            console.log(data);
+        };
+        socket.onopen = function () {
+            socket.send("sss");
+        };
     };
     DevicesComponent.prototype.ngAfterViewChecked = function () {
         if (this.devices != null && this.device_num != this.devices.length && this.device_num < this.devices.length) {
@@ -138,7 +152,7 @@ var DevicesComponent = (function () {
             selector: 'my-devices',
             templateUrl: '../views/devices.component.html'
         }), 
-        __metadata('design:paramtypes', [device_service_1.DeviceService])
+        __metadata('design:paramtypes', [device_service_1.DeviceService, socket_service_1.SocketService])
     ], DevicesComponent);
     return DevicesComponent;
 }());

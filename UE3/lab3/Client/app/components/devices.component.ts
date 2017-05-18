@@ -1,6 +1,7 @@
 import {Component, OnInit, AfterViewChecked} from '@angular/core';
 import {DeviceService} from "../services/device.service";
 import {Device} from "../model/device";
+import {SocketService} from "../services/socket.service";
 
 declare var $: any;
 
@@ -17,12 +18,25 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
 
     device_num: number = 0;
 
-    constructor(private deviceService: DeviceService) {
+    constructor(private deviceService: DeviceService, private socketService: SocketService) {
     }
 
     ngOnInit(): void {
         this.update = true;
         this.listDevices();
+        /*this.socketService.createWebsocket().subscribe(
+            msg => {
+                console.log(msg);
+            }
+        )*/
+
+        let socket = new WebSocket('ws://localhost:8081/api/test');
+        socket.onmessage = function(data) {
+            console.log(data);
+        }
+        socket.onopen = function() {
+            socket.send("sss");
+        }
     }
 
 

@@ -20,12 +20,11 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/api',apiRouter);
 
-var aWss = expressWs.getWss('/');
+//var aWss = expressWs.getWss('/api');
 
-var username = "maus";
+var username = null;
 var password = null;
 var devices = null;
-
 
 //TODO Implementieren Sie hier Ihre REST-Schnittstelle
 /* Ermöglichen Sie wie in der Angabe beschrieben folgende Funktionen:
@@ -45,8 +44,6 @@ var devices = null;
  */
 apiRouter.use(function(req, res, next) {
 
-
-console.log(req.headers);
   // check authorization header
   var token = req.headers['authorization'].split(" ")[1];
 
@@ -57,7 +54,7 @@ console.log(req.headers);
     jwt.verify(token, 'secret', function(err, decoded) {      
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
-      } else {
+    } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;    
         next();
@@ -74,6 +71,17 @@ console.log(req.headers);
     });
 
   }
+});
+
+apiRouter.ws('/test', function(ws, req) {
+  ws.on('connection', function(msg) {
+    console.log("connected");
+    ws.send("sss");
+  });
+  ws.on('message', function(msg) {
+    console.log("received");
+    ws.send(msg);
+  });
 });
  
  
@@ -111,7 +119,7 @@ apiRouter.get("/devices/:uuid" , function (req, res){
 	var uuid = req.params.uuid;
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id == uuid){
-			 res.json(devices["devices"][i]);
+			 return res.json(devices["devices"][i]);
 		 }
 	 }
 	 res.status(400).json({
@@ -244,9 +252,9 @@ function refreshConnected() {
      *
      * Bitte beachten Sie, dass diese Funktion von der Simulation genutzt wird um periodisch die simulierten Daten an alle Clients zu übertragen.
      */
-    aWss.clients.forEach(function (client) {
+    /*aWss.clients.forEach(function (client) {
       client.send(JSON.stringify(devices));
-    });
+    });*/
 }
 
 

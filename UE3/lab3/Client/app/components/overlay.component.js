@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var overview_component_1 = require("./overview.component");
 var device_service_1 = require("../services/device.service");
+var device_1 = require("../model/device");
+var controlUnit_1 = require("../model/controlUnit");
 var OverlayComponent = (function () {
     function OverlayComponent(deviceService) {
         this.deviceService = deviceService;
@@ -36,38 +38,43 @@ var OverlayComponent = (function () {
      * @param form
      */
     OverlayComponent.prototype.onSubmit = function (form) {
-        var device;
-        device.display_name = form.value.displayname;
+        var device = new device_1.Device();
+        device.display_name = form.value["displayname"];
         device.type = form.value["type-input"];
         device.type_name = form.value.typename;
-        /*let controlUnit: ControlUnit;
+        device.image_alt = "";
+        device.description = "";
+        device.image = "images/thermometer.svg";
+        var controlUnit = new controlUnit_1.ControlUnit();
         controlUnit.name = form.value.elementname;
-        switch(this.controlUnitType_selected) {
-          case "Ein/Ausschalter":
-            controlUnit.type = ControlType.boolean;
-            break;
-          case "Diskrete Werte":
-            controlUnit.type = ControlType.enum;
-            break;
-          case "Kontinuierlicher Wert":
-            controlUnit.type = ControlType.continuous;
-            break;
-        }*/
-        /*if(form.value["minimum-value"] && form.value["maximum-value"]) {
-          controlUnit.min = form.value["minimum-value"];
-          controlUnit.max = form.value["maximum-value"];
+        controlUnit.primary = true;
+        switch (this.controlUnitType_selected.trim()) {
+            case "Ein/Ausschalter":
+                controlUnit.type = "boolean";
+                break;
+            case "Diskrete Werte":
+                controlUnit.type = "enum";
+                break;
+            case "Kontinuierlicher Wert":
+                controlUnit.type = "continuous";
+                break;
         }
-    
-        if(form.value["discrete-values"]) {
-          let values = form.value["discrete-values"].split(",");
-          for(var i = 0; i < values.length; i++) {
-            values[i] = values[i].trim();
-          }
-          controlUnit.values = values;
-        }*/
-        //device.control_units;
-        //device.control_units.push(controlUnit);
-        //this.deviceService.addDevice(device);
+        controlUnit.type = "boolean";
+        if (form.value["minimum-value"] != undefined && form.value["maximum-value"] != undefined) {
+            controlUnit.min = form.value["minimum-value"];
+            controlUnit.max = form.value["maximum-value"];
+        }
+        if (form.value["discrete-values"] != undefined) {
+            var values = form.value["discrete-values"].split(",");
+            for (var i = 0; i < values.length; i++) {
+                values[i] = values[i].trim();
+            }
+            controlUnit.values = values;
+        }
+        var control_units = [];
+        control_units.push(controlUnit);
+        device.control_units = control_units;
+        this.deviceService.addDevice(device).subscribe(function (res) { });
         form.reset();
         this.overviewComponent.closeAddDeviceWindow();
         //TODO Lesen Sie Daten aus der Form aus und übertragen Sie diese an Ihre REST-Schnittstelle

@@ -20,6 +20,15 @@ var DeviceService = (function () {
         this.url = localStorage.getItem("api");
     }
     //TODO Sie können dieses Service benutzen, um alle REST-Funktionen für die Smart-Devices zu implementieren
+    DeviceService.prototype.addDevice = function (device) {
+        var _this = this;
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post(this.url + "/api/devices", JSON.stringify(device), options).map(function (res) {
+            var device = _this.parserService.parseDevice(res.json());
+            return device;
+        });
+    };
     DeviceService.prototype.getDevices = function () {
         var _this = this;
         //TODO Lesen Sie die Geräte über die REST-Schnittstelle aus
@@ -42,15 +51,6 @@ var DeviceService = (function () {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.get(this.url + "/api/devices/" + id, options).map(function (res) {
-            var device = _this.parserService.parseDevice(res.json());
-            return device;
-        });
-    };
-    DeviceService.prototype.addDevice = function (device) {
-        var _this = this;
-        var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
-        var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.url + "/api/devices", JSON.stringify(device), options).map(function (res) {
             var device = _this.parserService.parseDevice(res.json());
             return device;
         });

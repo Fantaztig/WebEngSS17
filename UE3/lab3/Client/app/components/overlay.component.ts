@@ -47,42 +47,49 @@ export class OverlayComponent implements OnInit {
    */
   onSubmit(form: NgForm): void {
 
-    let device: Device;
-    device.display_name = form.value.displayname;
+    var device: Device = new Device();
+    device.display_name = form.value["displayname"];
     device.type = form.value["type-input"];
     device.type_name = form.value.typename;
+    device.image_alt = "";
+    device.description = "";
+    device.image = "images/thermometer.svg";
 
-    /*let controlUnit: ControlUnit;
+    let controlUnit: ControlUnit = new ControlUnit();
     controlUnit.name = form.value.elementname;
-    switch(this.controlUnitType_selected) {
+    controlUnit.primary = true;
+    switch(this.controlUnitType_selected.trim()) {
       case "Ein/Ausschalter":
-        controlUnit.type = ControlType.boolean;
+        controlUnit.type = "boolean";
         break;
       case "Diskrete Werte":
-        controlUnit.type = ControlType.enum;
+        controlUnit.type = "enum";
         break;
       case "Kontinuierlicher Wert":
-        controlUnit.type = ControlType.continuous;
+        controlUnit.type = "continuous";
         break;
-    }*/
+    }
+    controlUnit.type = "boolean";
 
-    /*if(form.value["minimum-value"] && form.value["maximum-value"]) {
+    if(form.value["minimum-value"] != undefined && form.value["maximum-value"] != undefined) {
       controlUnit.min = form.value["minimum-value"];
       controlUnit.max = form.value["maximum-value"];
     }
 
-    if(form.value["discrete-values"]) {
+    if(form.value["discrete-values"] != undefined) {
       let values = form.value["discrete-values"].split(",");
       for(var i = 0; i < values.length; i++) {
         values[i] = values[i].trim();
       }
       controlUnit.values = values;
-    }*/
+    }
 
-    //device.control_units;
-    //device.control_units.push(controlUnit);
+    let control_units: Array<ControlUnit> = [];
+    control_units.push(controlUnit);
 
-    //this.deviceService.addDevice(device);
+    device.control_units = control_units;
+
+    this.deviceService.addDevice(device).subscribe(res => {});
 
     form.reset();
     this.overviewComponent.closeAddDeviceWindow();

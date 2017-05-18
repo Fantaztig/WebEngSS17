@@ -11,28 +11,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var device_service_1 = require("../services/device.service");
 var socket_service_1 = require("../services/socket.service");
+var device_parser_service_1 = require('../services/device-parser.service');
 var DevicesComponent = (function () {
-    function DevicesComponent(deviceService, socketService) {
+    function DevicesComponent(deviceService, parserService, socketService) {
         this.deviceService = deviceService;
+        this.parserService = parserService;
         this.socketService = socketService;
         this.update = true;
         this.device_num = 0;
     }
     DevicesComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.update = true;
         this.listDevices();
-        /*this.socketService.createWebsocket().subscribe(
-            msg => {
-                console.log(msg);
+        this.socketService.getConnection().subscribe(function (res) {
+            var msg = JSON.parse(res.data);
+            console.log(msg);
+            if (msg.method == "delete") {
+                for (var i = 0; i < _this.devices.length; i++) {
+                    if (_this.devices[i].id == msg.device) {
+                        _this.devices.splice(i, 1);
+                    }
+                }
             }
-        )*/
-        var socket = new WebSocket('ws://localhost:8081/api/test');
-        socket.onmessage = function (data) {
-            console.log(data);
-        };
-        socket.onopen = function () {
-            socket.send("sss");
-        };
+            if (msg.method == "change") {
+                for (var i = 0; i < _this.devices.length; i++) {
+                    if (_this.devices[i].id == msg.device) {
+                        _this.devices[i].display_name = msg.displayname;
+                    }
+                }
+            }
+            if (msg.method == "added") {
+                var found = false;
+                for (var i = 0; i < _this.devices.length; i++) {
+                    if (_this.devices[i].id == msg.device.id) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    var device = _this.parserService.parseDevice(msg.device);
+                    _this.devices.push(device);
+                }
+            }
+        });
     };
     DevicesComponent.prototype.ngAfterViewChecked = function () {
         if (this.devices != null && this.device_num != this.devices.length && this.device_num < this.devices.length) {
@@ -152,7 +173,7 @@ var DevicesComponent = (function () {
             selector: 'my-devices',
             templateUrl: '../views/devices.component.html'
         }), 
-        __metadata('design:paramtypes', [device_service_1.DeviceService, socket_service_1.SocketService])
+        __metadata('design:paramtypes', [device_service_1.DeviceService, device_parser_service_1.DeviceParserService, socket_service_1.SocketService])
     ], DevicesComponent);
     return DevicesComponent;
 }());

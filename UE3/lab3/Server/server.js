@@ -8,6 +8,7 @@ var fs = require("fs");
 var expressWs = require('express-ws')(app);
 var http = require('http');
 var apiRouter = express.Router();
+const WebSocket = require('ws');
 
 var simulation = require('./simulation.js');
 var bodyParser = require('body-parser');
@@ -20,7 +21,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/api',apiRouter);
 
-//var aWss = expressWs.getWss('/api');
+var aWss = expressWs.getWss();
 
 var username = null;
 var password = null;
@@ -56,7 +57,7 @@ apiRouter.use(function(req, res, next) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
     } else {
         // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
+        req.decoded = decoded;  
         next();
       }
     });
@@ -73,14 +74,13 @@ apiRouter.use(function(req, res, next) {
   }
 });
 
-apiRouter.ws('/test', function(ws, req) {
+app.ws('/', function(ws, req) {
   ws.on('connection', function(msg) {
     console.log("connected");
     ws.send("sss");
   });
   ws.on('message', function(msg) {
-    console.log("received");
-    ws.send(msg);
+      console.log(msg);
   });
 });
  
@@ -107,6 +107,17 @@ apiRouter.post("/updateCurrent", function (req, res) {
 	 });
 });
 
+apiRouter.post("/devices" , function (req, res){
+	var data = req.body;
+    data.id = uuid();
+	devices['devices'].push(data);
+    broadcast({
+        method:"added",
+        device:data
+    })
+	res.status(200).json(data);
+});
+
 apiRouter.get("/devices" , function (req, res){
 	if(devices == null){
 		res.status(500).end;
@@ -127,20 +138,16 @@ apiRouter.get("/devices/:uuid" , function (req, res){
 	 });
 });
 
-apiRouter.post("/devices" , function (req, res){
-	var data = req.body;
-	devices['devices'].push(data);
-	res.status(200).json({
-		status: "ok"
-    });
-});
-
 apiRouter.delete("/devices/:uuid" , function (req, res){
 	var uuid = req.params.uuid;
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id == uuid){
 			 devices["devices"].splice(i,1);
-			 res.status(200).json({
+             broadcast({
+                 method: "delete",
+                 device: uuid
+             });
+			 return res.status(200).json({
                     status: "ok"
                 });
 		 }
@@ -156,7 +163,12 @@ apiRouter.put("/devices/:uuid" , function (req, res){
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id === uuid){
 			 devices["devices"][i] = data;
-			 res.status(200).json({
+             broadcast({
+                 method: "change",
+                 device: uuid,
+                 displayname: devices["devices"][i].display_name
+             });
+			 return res.status(200).json({
                     status: "ok"
                 });
 		 }
@@ -206,6 +218,15 @@ apiRouter.post("/me/change_password", function(req, res) {
         })
     }
 })
+
+function broadcast(msg) {
+    var clients = aWss.clients
+    clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(msg));
+        }
+    });
+}
 
 function readUser() {
     "use strict";

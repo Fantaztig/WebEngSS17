@@ -2,6 +2,7 @@ import {Component, OnInit, AfterViewChecked} from '@angular/core';
 import {DeviceService} from "../services/device.service";
 import {Device} from "../model/device";
 import {SocketService} from "../services/socket.service";
+import {DeviceParserService} from '../services/device-parser.service';
 
 declare var $: any;
 
@@ -18,25 +19,44 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
 
     device_num: number = 0;
 
-    constructor(private deviceService: DeviceService, private socketService: SocketService) {
+    constructor(private deviceService: DeviceService, private parserService: DeviceParserService, private socketService: SocketService) {
     }
 
     ngOnInit(): void {
         this.update = true;
         this.listDevices();
-        /*this.socketService.createWebsocket().subscribe(
-            msg => {
-                console.log(msg);
+         this.socketService.getConnection().subscribe(
+            res => {
+               let msg = JSON.parse(res.data);
+               console.log(msg)
+               if(msg.method == "delete") {
+                   for(var i = 0; i< this.devices.length; i++) {
+                       if(this.devices[i].id == msg.device) {
+                           this.devices.splice(i,1);
+                       }
+                   }
+               }
+               if(msg.method == "change") {
+                   for(var i = 0; i< this.devices.length; i++) {
+                       if(this.devices[i].id == msg.device) {
+                           this.devices[i].display_name = msg.displayname;
+                       }
+                   }
+               }
+               if(msg.method == "added") {
+                   var found = false;
+                   for(var i = 0; i< this.devices.length; i++) {
+                       if(this.devices[i].id == msg.device.id) {
+                           found = true;
+                       }
+                   }
+                   if(!found) {
+                    let device: Device = this.parserService.parseDevice(msg.device);
+                    this.devices.push(device);
+                   }
+               }
             }
-        )*/
-
-        let socket = new WebSocket('ws://localhost:8081/api/test');
-        socket.onmessage = function(data) {
-            console.log(data);
-        }
-        socket.onopen = function() {
-            socket.send("sss");
-        }
+        )
     }
 
 

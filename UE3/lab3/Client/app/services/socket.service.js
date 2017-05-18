@@ -13,9 +13,11 @@ var core_1 = require('@angular/core');
 var Rx_1 = require('rxjs/Rx');
 var SocketService = (function () {
     function SocketService() {
+        this.socket = null;
+        this.socket = this.createSocket();
     }
-    SocketService.prototype.createWebsocket = function () {
-        var socket = new WebSocket('ws://localhost:8081/');
+    SocketService.prototype.createSocket = function () {
+        var socket = new WebSocket("ws://localhost:8081/");
         var observable = Rx_1.Observable.create(function (observer) {
             socket.onmessage = observer.next.bind(observer);
             socket.onerror = observer.error.bind(observer);
@@ -24,12 +26,21 @@ var SocketService = (function () {
         });
         var observer = {
             next: function (data) {
-                if (socket.readyState === WebSocket.OPEN) {
-                    console.log(data);
-                }
+                var interval = setInterval(function () {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify(data));
+                        clearInterval(interval);
+                    }
+                });
             }
         };
         return Rx_1.Subject.create(observer, observable);
+    };
+    SocketService.prototype.getConnection = function () {
+        return this.socket;
+    };
+    SocketService.prototype.send = function (msg) {
+        this.socket.next(msg);
     };
     SocketService = __decorate([
         core_1.Injectable(), 

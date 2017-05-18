@@ -20,6 +20,16 @@ export class DeviceService {
 
     //TODO Sie können dieses Service benutzen, um alle REST-Funktionen für die Smart-Devices zu implementieren
 
+    addDevice(device: Device): Observable<Device> {
+        let headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(this.url + "/api/devices", JSON.stringify(device) , options).map(
+            res => {
+                let device: Device = this.parserService.parseDevice(res.json());
+                return device;
+            });
+    }
+
     getDevices(): Observable<Device[]> {
         //TODO Lesen Sie die Geräte über die REST-Schnittstelle aus
         /*
@@ -42,16 +52,6 @@ export class DeviceService {
         let headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
         let options = new RequestOptions({ headers: headers });
         return this.http.get(this.url + "/api/devices/" + id, options).map(
-            res => {
-                let device: Device = this.parserService.parseDevice(res.json());
-                return device;
-            });
-    }
-
-    addDevice(device: Device): Observable<Device> {
-        let headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
-        let options = new RequestOptions({ headers: headers });
-        return this.http.post(this.url + "/api/devices", JSON.stringify(device) , options).map(
             res => {
                 let device: Device = this.parserService.parseDevice(res.json());
                 return device;

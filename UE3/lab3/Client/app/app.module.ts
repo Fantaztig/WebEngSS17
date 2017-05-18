@@ -25,6 +25,7 @@ import {UserService} from './services/user.service';
 import {XhrService} from './services/xhr.service';
 import {StateService} from './services/state.service';
 import {SocketService} from './services/socket.service';
+import {AuthGuard} from './auth-guard';
 
 @NgModule({
   imports: [
@@ -56,7 +57,8 @@ import {SocketService} from './services/socket.service';
     UserService,
     XhrService,
     StateService,
-    SocketService
+    SocketService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

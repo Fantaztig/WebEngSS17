@@ -53,23 +53,38 @@ export class OverlayComponent implements OnInit {
     device.type_name = form.value.typename;
     device.image_alt = "";
     device.description = "";
-    device.image = "images/thermometer.svg";
+    switch(device.type) {
+      case "Beleuchtung":
+        device.image = "images/bulb.svg";
+        break;
+      case "Heizkörperthermostat":
+        device.image = "images/thermometer.svg";
+        break;
+      case "Rollladen":
+        device.image = "images/roller_shutter.svg";
+        break;
+      case "Überwachungskamera":
+        device.image = "images/webcam.svg";
+        break;
+      case "Webcam":
+        device.image = "images/webcam.svg";
+        break;
+    }
 
     let controlUnit: ControlUnit = new ControlUnit();
     controlUnit.name = form.value.elementname;
     controlUnit.primary = true;
-    switch(this.controlUnitType_selected.trim()) {
-      case "Ein/Ausschalter":
-        controlUnit.type = "boolean";
+    switch(this.controlUnitType_selected) {
+      case "Ein/Auschalter":
+        controlUnit.type = ControlType.boolean;
         break;
       case "Diskrete Werte":
-        controlUnit.type = "enum";
+        controlUnit.type = ControlType.enum;
         break;
       case "Kontinuierlicher Wert":
-        controlUnit.type = "continuous";
+        controlUnit.type = ControlType.continuous;
         break;
     }
-    controlUnit.type = "boolean";
 
     if(form.value["minimum-value"] != undefined && form.value["maximum-value"] != undefined) {
       controlUnit.min = form.value["minimum-value"];
@@ -84,8 +99,8 @@ export class OverlayComponent implements OnInit {
       controlUnit.values = values;
     }
 
-    let control_units: Array<ControlUnit> = [];
-    control_units.push(controlUnit);
+    let control_units: [ControlUnit];
+    control_units = [controlUnit];
 
     device.control_units = control_units;
 

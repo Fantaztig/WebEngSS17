@@ -13,6 +13,7 @@ var overview_component_1 = require("./overview.component");
 var device_service_1 = require("../services/device.service");
 var device_1 = require("../model/device");
 var controlUnit_1 = require("../model/controlUnit");
+var controlType_1 = require("../model/controlType");
 var OverlayComponent = (function () {
     function OverlayComponent(deviceService) {
         this.deviceService = deviceService;
@@ -44,22 +45,37 @@ var OverlayComponent = (function () {
         device.type_name = form.value.typename;
         device.image_alt = "";
         device.description = "";
-        device.image = "images/thermometer.svg";
+        switch (device.type) {
+            case "Beleuchtung":
+                device.image = "images/bulb.svg";
+                break;
+            case "Heizkörperthermostat":
+                device.image = "images/thermometer.svg";
+                break;
+            case "Rollladen":
+                device.image = "images/roller_shutter.svg";
+                break;
+            case "Überwachungskamera":
+                device.image = "images/webcam.svg";
+                break;
+            case "Webcam":
+                device.image = "images/webcam.svg";
+                break;
+        }
         var controlUnit = new controlUnit_1.ControlUnit();
         controlUnit.name = form.value.elementname;
         controlUnit.primary = true;
-        switch (this.controlUnitType_selected.trim()) {
-            case "Ein/Ausschalter":
-                controlUnit.type = "boolean";
+        switch (this.controlUnitType_selected) {
+            case "Ein/Auschalter":
+                controlUnit.type = controlType_1.ControlType.boolean;
                 break;
             case "Diskrete Werte":
-                controlUnit.type = "enum";
+                controlUnit.type = controlType_1.ControlType.enum;
                 break;
             case "Kontinuierlicher Wert":
-                controlUnit.type = "continuous";
+                controlUnit.type = controlType_1.ControlType.continuous;
                 break;
         }
-        controlUnit.type = "boolean";
         if (form.value["minimum-value"] != undefined && form.value["maximum-value"] != undefined) {
             controlUnit.min = form.value["minimum-value"];
             controlUnit.max = form.value["maximum-value"];
@@ -71,8 +87,8 @@ var OverlayComponent = (function () {
             }
             controlUnit.values = values;
         }
-        var control_units = [];
-        control_units.push(controlUnit);
+        var control_units;
+        control_units = [controlUnit];
         device.control_units = control_units;
         this.deviceService.addDevice(device).subscribe(function (res) { });
         form.reset();

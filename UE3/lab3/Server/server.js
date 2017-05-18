@@ -75,12 +75,8 @@ apiRouter.use(function(req, res, next) {
 });
 
 app.ws('/', function(ws, req) {
-  ws.on('connection', function(msg) {
-    console.log("connected");
-    ws.send("sss");
-  });
   ws.on('message', function(msg) {
-      console.log(msg);
+     // TODO Token verifify
   });
 });
  
@@ -110,6 +106,17 @@ apiRouter.post("/updateCurrent", function (req, res) {
 apiRouter.post("/devices" , function (req, res){
 	var data = req.body;
     data.id = uuid();
+    switch(data.control_units[0].type) {
+        case 0:
+            data.control_units[0].type = "boolean";
+            break;
+        case 1:
+            data.control_units[0].type = "enum";
+            break;
+        case 2:
+            data.control_units[0].type = "continuous";
+            break;
+    }
 	devices['devices'].push(data);
     broadcast({
         method:"added",

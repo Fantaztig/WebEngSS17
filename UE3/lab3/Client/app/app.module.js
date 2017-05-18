@@ -33,6 +33,7 @@ var user_service_1 = require('./services/user.service');
 var xhr_service_1 = require('./services/xhr.service');
 var state_service_1 = require('./services/state.service');
 var socket_service_1 = require('./services/socket.service');
+var auth_guard_1 = require('./auth-guard');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -67,7 +68,8 @@ var AppModule = (function () {
                 user_service_1.UserService,
                 xhr_service_1.XhrService,
                 state_service_1.StateService,
-                socket_service_1.SocketService
+                socket_service_1.SocketService,
+                auth_guard_1.AuthGuard
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

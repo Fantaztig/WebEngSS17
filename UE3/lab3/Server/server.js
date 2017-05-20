@@ -297,7 +297,8 @@ function refreshConnected() {
 
             var sendMessage = "simulation";
 
-            entry.send(sendMessage);
+           // entry.send(sendMessage);
+            entry.send(JSON.stringify(devices));
 
         } else {
             var index = connections.indexOf(entry);

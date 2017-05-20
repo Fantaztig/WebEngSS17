@@ -16,8 +16,9 @@ var AuthGuard = (function () {
     }
     AuthGuard.prototype.canActivate = function () {
         var loggedIn = !(localStorage.getItem("token") == null || localStorage.getItem("token") == undefined);
+        console.log(loggedIn);
         if (!loggedIn) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['login']);
         }
         return loggedIn;
     };

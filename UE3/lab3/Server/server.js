@@ -59,18 +59,18 @@ apiRouter.use(function(req, res, next) {
 			} else {
 				// if everything is good, save to request for use in other routes
 				req.decoded = decoded;  
-				next();
+				return next();
 			}
 		});
 		
-	}
+	}else{
     // if there is no token
     // return an error
     return res.status(403).send({ 
         success: false, 
         message: 'No token provided.' 
     });
-
+	}
   
 });
 

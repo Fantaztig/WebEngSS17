@@ -76,8 +76,12 @@ apiRouter.use(function(req, res, next) {
 });
 
 app.ws('/', function(ws, req) {
-    console.log('A client connected!');
-    connections.push(ws);
+
+
+    ws.on('connection',function(){
+        connections.push(ws);
+        console.log('A client connected!');
+    });
 
   ws.on('message', function(msg) {
      // TODO Token verifify
@@ -195,7 +199,7 @@ apiRouter.put("/devices/:uuid" , function (req, res){
 apiRouter.get("/status" , function(req, res){
 	//TODO Startzeit und failed logins speichern!
 	res.status(200).json({
-		server_start : "01.01.1970 20:11",
+		server_start : new Date(),
 		failed_logins : "0"
 	});
 });

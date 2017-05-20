@@ -20,12 +20,12 @@ var UserService = (function () {
     UserService.prototype.authenticate = function (username, password) {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.url + "/auth", { username: username, password: password }, options).map(function (res) { return res.json(); });
+        return this.http.post(localStorage.getItem("api") + "/auth", { username: username, password: password }, options).map(function (res) { return res.json(); });
     };
     UserService.prototype.changePassword = function (old_password, new_password, repeat_password) {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.url + "/api/me/change_password", { old_password: old_password, new_password: new_password, repeat_password: repeat_password }, options).map(function (res) { return res.json(); });
+        return this.http.post(localStorage.getItem("api") + "/api/me/change_password", { old_password: old_password, new_password: new_password, repeat_password: repeat_password }, options).map(function (res) { return res.json(); });
     };
     UserService = __decorate([
         core_1.Injectable(), 

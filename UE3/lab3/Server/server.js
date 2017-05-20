@@ -201,6 +201,7 @@ app.post("/auth", function(req, res) {
                 console.error(err);
                 res.status(403);
             }
+			console.log("User logged in, returning token: " + token);
             res.json({
                 token: token
             })

@@ -22,7 +22,7 @@ export class LoginComponent {
         this.authService.authenticate(form.value.username, form.value.password).subscribe(
             res => {
                 localStorage.setItem("token", res.token);
-                this.router.navigate(['/overview'])
+                this.router.navigate(['overview'])
             },
             err => {
                 this.loginError = true;

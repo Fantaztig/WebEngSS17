@@ -23,7 +23,7 @@ var LoginComponent = (function () {
         //TODO Überprüfen Sie die Login-Daten über die REST-Schnittstelle und leiten Sie den Benutzer bei Erfolg auf die Overview-Seite weiter
         this.authService.authenticate(form.value.username, form.value.password).subscribe(function (res) {
             localStorage.setItem("token", res.token);
-            _this.router.navigate(['/overview']);
+            _this.router.navigate(['overview']);
         }, function (err) {
             _this.loginError = true;
         });

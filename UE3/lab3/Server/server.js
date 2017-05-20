@@ -27,7 +27,8 @@ var username = null;
 var password = null;
 var devices = null;
 
-var connections =[];
+var connections = [];
+var expiredTokens = [];
 //TODO Implementieren Sie hier Ihre REST-Schnittstelle
 /* Ermöglichen Sie wie in der Angabe beschrieben folgende Funktionen:
  *  Abrufen aller Geräte als Liste
@@ -50,21 +51,19 @@ apiRouter.use(function(req, res, next) {
   var token = req.headers['authorization'].split(" ")[1];
 
   // decode token
-  if (token) {
-
-    // verifies secret and checks exp
-    jwt.verify(token, 'secret', function(err, decoded) {      
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });    
-    } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;  
-        next();
-      }
-    });
-
-  } else {
-
+	if (token && !expiredTokens.includes(token)) {
+		
+		jwt.verify(token, 'secret', function(err, decoded) {      
+			if (err) {
+				return res.json({ success: false, message: 'Failed to authenticate token.' });    
+			} else {
+				// if everything is good, save to request for use in other routes
+				req.decoded = decoded;  
+				next();
+			}
+		});
+		
+	}
     // if there is no token
     // return an error
     return res.status(403).send({ 
@@ -72,7 +71,7 @@ apiRouter.use(function(req, res, next) {
         message: 'No token provided.' 
     });
 
-  }
+  
 });
 
 app.ws('/', function(ws, req) {
@@ -211,7 +210,7 @@ app.post("/auth", function(req, res) {
             if(err) {
                 console.error(err);
                 res.status(403);
-            }
+            } 
 			console.log("User logged in, returning token: " + token);
             res.json({
                 token: token
@@ -220,6 +219,16 @@ app.post("/auth", function(req, res) {
     } else {
         res.status(403).end();
     }
+})
+
+app.get("/logout", function(req, res){
+	var token = req.headers['authorization'].split(" ")[1];
+
+  // decode token
+  if (token && !expiredTokens.includes(token)) {
+	  expiredTokens.push(token);
+  }
+	
 })
 
 apiRouter.post("/me/change_password", function(req, res) {

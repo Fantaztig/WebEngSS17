@@ -27,6 +27,7 @@ var username = null;
 var password = null;
 var devices = null;
 
+var connections =[];
 //TODO Implementieren Sie hier Ihre REST-Schnittstelle
 /* Ermöglichen Sie wie in der Angabe beschrieben folgende Funktionen:
  *  Abrufen aller Geräte als Liste
@@ -75,12 +76,18 @@ apiRouter.use(function(req, res, next) {
 });
 
 app.ws('/', function(ws, req) {
+    console.log('A client connected!');
+    connections.push(ws);
+
   ws.on('message', function(msg) {
      // TODO Token verifify
+
+
   });
+    console.log("Current number of clients: " + connections.length);
 });
- 
- 
+
+
 apiRouter.post("/updateCurrent", function (req, res) {
     "use strict";
     //TODO Vervollständigen Sie diese Funktion, welche den aktuellen Wert eines Gerätes ändern soll
@@ -284,6 +291,22 @@ function refreshConnected() {
     /*aWss.clients.forEach(function (client) {
       client.send(JSON.stringify(devices));
     });*/
+
+    connections.forEach(function (entry) {
+        if (entry.readyState === entry.OPEN) {
+
+            var sendMessage = "simulation";
+
+            entry.send(sendMessage);
+
+        } else {
+            var index = connections.indexOf(entry);
+            if (index > -1) {
+                connections.splice(index, 1);
+            }
+            console.log("Removed client. Current number of clients: " + connections.length);
+        }
+    });
 }
 
 

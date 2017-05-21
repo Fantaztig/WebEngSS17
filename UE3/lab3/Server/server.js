@@ -129,7 +129,7 @@ apiRouter.post("/devices" , function (req, res){
     }
 	devices['devices'].push(data);
     broadcast({
-        method:"added",
+        action:"added",
         device:data
     })
 	res.status(200).json(data);
@@ -157,11 +157,12 @@ apiRouter.get("/devices/:uuid" , function (req, res){
 
 apiRouter.delete("/devices/:uuid" , function (req, res){
 	var uuid = req.params.uuid;
+    console.log("Delete device with id " + uuid);
 	 for(var i = 0; i < devices["devices"].length; i++){
 		 if(devices["devices"][i].id == uuid){
 			 devices["devices"].splice(i,1);
              broadcast({
-                 method: "delete",
+                 action: "delete",
                  device: uuid
              });
 			 return res.status(200).json({
@@ -175,24 +176,28 @@ apiRouter.delete("/devices/:uuid" , function (req, res){
 });
 
 apiRouter.put("/devices/:uuid" , function (req, res){
-	var uuid = req.params.uuid;
-    var data = req.body;
-	 for(var i = 0; i < devices["devices"].length; i++){
-		 if(devices["devices"][i].id === uuid){
-			 devices["devices"][i] = data;
-             broadcast({
-                 method: "change",
-                 device: uuid,
-                 displayname: devices["devices"][i].display_name
-             });
-			 return res.status(200).json({
-                    status: "ok"
-                });
-		 }
-	 }
-	 res.status(400).json({
-		 status: "device not found!"
-	 });
+    "use strict";
+
+    var uuid = req.params.uuid;
+    var data = req.body.device;
+    var diagramData = req.body.diagram;
+    for (var i = 0; i < devices.devices.length; i++) {
+        if (devices.devices[i].id === uuid) {
+            Object.assign(devices.devices[i], data);
+            broadcast({
+                action: "change",
+                device: uuid,
+                device_object: data,
+                diagram: diagramData
+            });
+            return res.status(200).json({
+                success: true
+            });
+        }
+    }
+    res.status(400).json({
+        success: false
+    });
 });
 
 apiRouter.get("/status" , function(req, res){

@@ -39,8 +39,22 @@ var ContinuousDeviceDetailsComponent = (function () {
     ;
     ContinuousDeviceDetailsComponent.prototype.ngOnInit = function () {
         this.new_value = this.controlUnit.current;
+        this.log_message = this.controlUnit.log;
+        var item = JSON.parse(sessionStorage.getItem(this.device.id + this.controlUnit.name));
+        console.log("Before");
+        console.log(this.lineChartLabels);
+        console.log(this.lineChartData);
+        if (item !== null) {
+            this.lineChartLabels = item.labels;
+            this.lineChartData[0] = { data: item.data, label: "Verlauf" };
+            if (item.log != undefined) {
+                this.controlUnit.log = item.log;
+            }
+            console.log("After");
+            console.log(this.lineChartLabels);
+            console.log(this.lineChartData);
+        }
     };
-    //TODO Überarbeiten Sie diese Klasse. Lesen Sie die Daten für das Diagramm aus dem SessionStorage aus und passen Sie die onSubmit Funktion an.
     /**
      * Liest den neuen Wert des Steuerungselements aus und leitet diesen an die REST-Schnittstelle weiter
      */
@@ -51,15 +65,22 @@ var ContinuousDeviceDetailsComponent = (function () {
         _lineChartData[0].data.push(this.new_value);
         this.lineChartLabels.push(time.toLocaleDateString() + " " + time.toLocaleTimeString());
         this.lineChartData = _lineChartData;
-        if (this.log_message != null) {
-            this.log_message += "\n";
+        var currentDate = time.toLocaleString();
+        var newLog = currentDate + ": " + this.controlUnit.current + " -> " + this.new_value;
+        if (this.controlUnit.log != null) {
+            this.controlUnit.log += "\n";
         }
         else {
-            this.log_message = "";
+            this.controlUnit.log = "";
         }
-        this.log_message += new Date().toLocaleString() + ": " + this.controlUnit.current + " -> " + this.new_value;
-        this.controlUnit.log = this.log_message;
+        this.controlUnit.log += newLog;
         this.controlUnit.current = this.new_value;
+        this.deviceService.changeDevice(this.device, {
+            log: newLog,
+            controlUnit: this.controlUnit,
+            new_value: this.new_value,
+            current_date: currentDate,
+        }).subscribe();
     };
     __decorate([
         core_1.Input(), 

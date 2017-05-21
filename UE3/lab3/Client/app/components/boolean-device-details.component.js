@@ -12,9 +12,11 @@ var core_1 = require('@angular/core');
 var device_1 = require("../model/device");
 var controlUnit_1 = require("../model/controlUnit");
 var device_service_1 = require("../services/device.service");
+var socket_service_1 = require("../services/socket.service");
 var BooleanDeviceDetailsComponent = (function () {
-    function BooleanDeviceDetailsComponent(deviceService) {
+    function BooleanDeviceDetailsComponent(deviceService, socketService) {
         this.deviceService = deviceService;
+        this.socketService = socketService;
         this.log_message = null;
         this.doughnutChartData = [0, 0];
         this.doughnutChartLabels = ['Aus', 'An'];
@@ -27,24 +29,33 @@ var BooleanDeviceDetailsComponent = (function () {
     }
     BooleanDeviceDetailsComponent.prototype.ngOnInit = function () {
         this.new_value = this.controlUnit.current == 1;
+        var item = JSON.parse(sessionStorage.getItem(this.device.id + this.controlUnit.name));
+        if (item !== null) {
+            this.doughnutChartData[0] = item.data[0];
+            this.doughnutChartData[1] = item.data[1];
+            this.doughnutChartData.slice();
+            if (item.log != undefined) {
+                this.controlUnit.log = item.log;
+            }
+        }
     };
-    //TODO Überarbeiten Sie diese Klasse. Lesen Sie die Daten für das Diagramm aus dem SessionStorage aus und passen Sie die onSubmit Funktion an.
     /**
      * Liest den neuen Wert des Steuerungselements aus und leitet diesen an die REST-Schnittstelle weiter
      */
     BooleanDeviceDetailsComponent.prototype.onSubmit = function () {
-        //TODO Lesen Sie die eingebenen Daten aus und verarbeiten Sie diese über die REST-Schnittstelle
         this.doughnutChartData[this.new_value ? 1 : 0]++;
         this.doughnutChartData = Object.assign({}, this.doughnutChartData);
-        if (this.log_message != null) {
-            this.log_message += "\n";
+        var currentDate = new Date().toLocaleString();
+        var newLog = currentDate + ": " + (this.controlUnit.current == 1 ? "An" : "Aus") + " -> " + (this.new_value ? "An" : "Aus");
+        this.controlUnit.current = this.new_value ? 1 : 0;
+        this.deviceService.changeDevice(this.device, { log: newLog, controlUnit: this.controlUnit, new_value: this.new_value ? 1 : 0, current_date: currentDate }).subscribe();
+        if (this.controlUnit.log != null) {
+            this.controlUnit.log += "\n";
         }
         else {
-            this.log_message = "";
+            this.controlUnit.log = "";
         }
-        this.log_message += new Date().toLocaleString() + ": " + (this.controlUnit.current == 1 ? "An" : "Aus") + " -> " + (this.new_value ? "An" : "Aus");
-        this.controlUnit.log = this.log_message;
-        this.controlUnit.current = this.new_value ? 1 : 0;
+        this.controlUnit.log += newLog;
     };
     __decorate([
         core_1.Input(), 
@@ -60,7 +71,7 @@ var BooleanDeviceDetailsComponent = (function () {
             selector: 'boolean-details',
             templateUrl: '../views/boolean-device-details.component.html'
         }), 
-        __metadata('design:paramtypes', [device_service_1.DeviceService])
+        __metadata('design:paramtypes', [device_service_1.DeviceService, socket_service_1.SocketService])
     ], BooleanDeviceDetailsComponent);
     return BooleanDeviceDetailsComponent;
 }());

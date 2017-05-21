@@ -10,8 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var device_service_1 = require("../services/device.service");
+var device_parser_service_1 = require("../services/device-parser.service");
 var socket_service_1 = require("../services/socket.service");
-var device_parser_service_1 = require('../services/device-parser.service');
+var controlType_1 = require("../model/controlType");
 var DevicesComponent = (function () {
     function DevicesComponent(deviceService, parserService, socketService) {
         this.deviceService = deviceService;
@@ -25,32 +26,84 @@ var DevicesComponent = (function () {
         this.update = true;
         this.listDevices();
         this.socketService.getConnection().subscribe(function (res) {
-            var msg = JSON.parse(res.data);
-            console.log(msg);
-            if (msg.method == "delete") {
+            var message = JSON.parse(res.data);
+            console.log(message);
+            if (message.action == "delete") {
                 for (var i = 0; i < _this.devices.length; i++) {
-                    if (_this.devices[i].id == msg.device) {
+                    if (_this.devices[i].id == message.device) {
                         _this.devices.splice(i, 1);
+                        for (var j = 0; j < _this.edit.length; j++) {
+                            if (_this.edit[j].id == message.device) {
+                                _this.edit.splice(j, 1);
+                            }
+                        }
                     }
                 }
             }
-            if (msg.method == "change") {
+            if (message.action == "change") {
                 for (var i = 0; i < _this.devices.length; i++) {
-                    if (_this.devices[i].id == msg.device) {
-                        _this.devices[i].display_name = msg.displayname;
+                    if (_this.devices[i].id == message.device) {
+                        Object.assign(_this.devices[i], message.device_object);
+                        _this.devices[i] = _this.parserService.parseDevice(_this.devices[i]);
+                        break;
                     }
                 }
+                if (message.diagram.log != null && message.diagram.log != undefined) {
+                    var log = JSON.parse(sessionStorage.getItem(message.device + message.diagram.controlUnit.name));
+                    var controlUnit = message.diagram.controlUnit;
+                    if (log == null) {
+                        log = {};
+                    }
+                    if (log.data == undefined) {
+                        switch (controlUnit.type) {
+                            case controlType_1.ControlType.boolean:
+                                log.data = [0, 0];
+                                break;
+                            case controlType_1.ControlType.enum:
+                                log.data = [];
+                                for (var i = 0; i < controlUnit.values.length; i++) {
+                                    log.data[i] = 0;
+                                }
+                                break;
+                            case controlType_1.ControlType.continuous:
+                                log.data = [];
+                                log.labels = [];
+                                break;
+                        }
+                    }
+                    if (log.log == undefined) {
+                        log.log = message.diagram.log;
+                    }
+                    else {
+                        log.log += "\n" + message.diagram.log;
+                    }
+                    // Update Value in Diagram
+                    switch (controlUnit.type) {
+                        case controlType_1.ControlType.boolean:
+                            log.data[message.diagram.new_value]++;
+                            break;
+                        case controlType_1.ControlType.enum:
+                            log.data[message.diagram.new_value]++;
+                            break;
+                        case controlType_1.ControlType.continuous:
+                            log.data.push(message.diagram.new_value);
+                            log.labels.push(message.diagram.current_date);
+                            break;
+                    }
+                    sessionStorage.setItem(message.device + message.diagram.controlUnit.name, JSON.stringify(log));
+                }
             }
-            if (msg.method == "added") {
+            if (message.action == "added") {
                 var found = false;
                 for (var i = 0; i < _this.devices.length; i++) {
-                    if (_this.devices[i].id == msg.device.id) {
+                    if (_this.devices[i].id == message.device.id) {
                         found = true;
                     }
                 }
                 if (!found) {
-                    var device = _this.parserService.parseDevice(msg.device);
+                    var device = _this.parserService.parseDevice(message.device);
                     _this.devices.push(device);
+                    _this.edit.push({ id: device.id, value: false });
                 }
             }
         });
@@ -140,17 +193,16 @@ var DevicesComponent = (function () {
      */
     DevicesComponent.prototype.finishEdit = function (device) {
         this.showLabel(device);
-        //TODO Lesen Sie den geänderten Anzeigenamen aus und speichern Sie diesen über die REST-Schnittstelle
-        this.deviceService.changeDevice(device).subscribe(function (res) { });
+        this.deviceService.changeDevice(device, {}).subscribe(function (res) {
+            device.draw_image();
+        });
     };
     /**
      * Entfernt das angegebene Gerät
      * @param device
      */
     DevicesComponent.prototype.removeDevice = function (device) {
-        //TODO Löschen Sie das angegebene Geräte über die REST-Schnittstelle
-        this.deviceService.deleteDevice(device.id).subscribe(function (res) {
-        });
+        this.deviceService.deleteDevice(device.id).subscribe(function (res) { });
     };
     /**
      * Setz das Input-Feld wieder auf ein Label zurück und beendet so das Bearbeiten

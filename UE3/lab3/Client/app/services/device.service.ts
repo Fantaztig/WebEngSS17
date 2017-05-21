@@ -67,10 +67,12 @@ export class DeviceService {
             });
     }
 
-    changeDevice(device: Device): Observable<any> {
+    changeDevice(device: Device, diagramData: any): Observable<any> {
         let headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
         let options = new RequestOptions({ headers: headers });
-        return this.http.put(this.url + "/api/devices/" + device.id ,JSON.stringify(device), options).map(
+
+        let data = {device: device, diagram: diagramData};
+        return this.http.put(this.url + "/api/devices/" + device.id ,JSON.stringify(data), options).map(
             res => {
                 res = res.json();
             });

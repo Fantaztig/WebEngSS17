@@ -1,8 +1,9 @@
 import {Component, OnInit, AfterViewChecked} from '@angular/core';
 import {DeviceService} from "../services/device.service";
 import {Device} from "../model/device";
+import {DeviceParserService} from "../services/device-parser.service";
 import {SocketService} from "../services/socket.service";
-import {DeviceParserService} from '../services/device-parser.service';
+import {ControlType} from "../model/controlType";
 
 declare var $: any;
 
@@ -25,43 +26,97 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
     ngOnInit(): void {
         this.update = true;
         this.listDevices();
-         this.socketService.getConnection().subscribe(
+
+        this.socketService.getConnection().subscribe(
             res => {
-               let msg = JSON.parse(res.data);
-               console.log(msg)
-               if(msg.method == "delete") {
-                   for(var i = 0; i< this.devices.length; i++) {
-                       if(this.devices[i].id == msg.device) {
-                           this.devices.splice(i,1);
-                       }
-                   }
-               }
-               if(msg.method == "change") {
-                   for(var i = 0; i< this.devices.length; i++) {
-                       if(this.devices[i].id == msg.device) {
-                           this.devices[i].display_name = msg.displayname;
-                       }
-                   }
-               }
-               if(msg.method == "added") {
-                   var found = false;
-                   for(var i = 0; i< this.devices.length; i++) {
-                       if(this.devices[i].id == msg.device.id) {
-                           found = true;
-                       }
-                   }
-                   if(!found) {
-                    let device: Device = this.parserService.parseDevice(msg.device);
-                    this.devices.push(device);
-                   }
-               }
+                let message = JSON.parse(res.data);
+                console.log(message);
+
+                if(message.action == "delete") {
+                    for(let i = 0; i < this.devices.length; i++) {
+                        if(this.devices[i].id == message.device) {
+                            this.devices.splice(i,1);
+                            for(let j = 0; j < this.edit.length; j++) {
+                                if(this.edit[j].id == message.device) {
+                                    this.edit.splice(j, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+                if(message.action == "change") {
+                    for(let i = 0; i < this.devices.length; i++) {
+                        if(this.devices[i].id == message.device) {
+                            Object.assign(this.devices[i], message.device_object);
+                            this.devices[i] = this.parserService.parseDevice(this.devices[i]);
+                            break;
+                        }
+                    }
+                    if (message.diagram.log != null && message.diagram.log != undefined) {
+                        let log = JSON.parse(sessionStorage.getItem(message.device + message.diagram.controlUnit.name));
+                        let controlUnit = message.diagram.controlUnit;
+                        if (log == null) {
+                            log = {};
+                        }
+                        if (log.data == undefined) {
+                            switch (controlUnit.type) {
+                                case ControlType.boolean:
+                                    log.data = [0, 0];
+                                    break;
+                                case ControlType.enum:
+                                    log.data = [];
+                                    for (let i = 0; i < controlUnit.values.length; i++) {
+                                        log.data[i] = 0;
+                                    }
+                                    break;
+                                case ControlType.continuous:
+                                    log.data = [];
+                                    log.labels = [];
+                                    break;
+                            }
+
+                        }
+                        if (log.log == undefined) {
+                            log.log = message.diagram.log;
+                        } else {
+                            log.log += "\n" + message.diagram.log;
+                        }
+
+                        // Update Value in Diagram
+                        switch (controlUnit.type) {
+                            case ControlType.boolean:
+                                log.data[message.diagram.new_value]++;
+                                break;
+                            case ControlType.enum:
+                                log.data[message.diagram.new_value]++;
+                                break;
+                            case ControlType.continuous:
+                                log.data.push(message.diagram.new_value);
+                                log.labels.push(message.diagram.current_date);
+                                break;
+                        }
+                        sessionStorage.setItem(message.device + message.diagram.controlUnit.name, JSON.stringify(log));
+                    }
+                }
+                if(message.action == "added") {
+                    let found = false;
+                    for(let i = 0; i < this.devices.length; i++) {
+                        if(this.devices[i].id == message.device.id) {
+                            found = true;
+                        }
+                    }
+                    if(!found) {
+                        let device = this.parserService.parseDevice(message.device);
+                        this.devices.push(device);
+                        this.edit.push({id: device.id, value: false});
+                    }
+                }
             }
         )
     }
 
 
     ngAfterViewChecked(): void {
-
         if (this.devices != null && this.device_num != this.devices.length && this.device_num < this.devices.length) {
             this.update = true;
             this.device_num = this.devices.length
@@ -157,8 +212,9 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
      */
     finishEdit(device: Device): void {
         this.showLabel(device);
-        //TODO Lesen Sie den geänderten Anzeigenamen aus und speichern Sie diesen über die REST-Schnittstelle
-        this.deviceService.changeDevice(device).subscribe(res => {});
+        this.deviceService.changeDevice(device, {}).subscribe(res => {
+            device.draw_image();
+        });
     }
 
     /**
@@ -166,11 +222,7 @@ export class DevicesComponent implements OnInit, AfterViewChecked {
      * @param device
      */
     removeDevice(device: Device): void {
-        //TODO Löschen Sie das angegebene Geräte über die REST-Schnittstelle
-        this.deviceService.deleteDevice(device.id).subscribe(
-            res => {
-
-            });
+        this.deviceService.deleteDevice(device.id).subscribe(res => {});
     }
 
     /**

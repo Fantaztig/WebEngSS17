@@ -62,10 +62,11 @@ var DeviceService = (function () {
             res = res.json();
         });
     };
-    DeviceService.prototype.changeDevice = function (device) {
+    DeviceService.prototype.changeDevice = function (device, diagramData) {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem("token") });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.put(this.url + "/api/devices/" + device.id, JSON.stringify(device), options).map(function (res) {
+        var data = { device: device, diagram: diagramData };
+        return this.http.put(this.url + "/api/devices/" + device.id, JSON.stringify(data), options).map(function (res) {
             res = res.json();
         });
     };

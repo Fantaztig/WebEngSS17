@@ -28,9 +28,16 @@ export class EnumDeviceDetailsComponent implements OnInit {
             this.polarChartLabels.push(val);
             this.polarChartData.push(0);
         }
-    }
 
-    //TODO Überarbeiten Sie diese Klasse. Lesen Sie die Daten für das Diagramm aus dem SessionStorage aus und passen Sie die onSubmit Funktion an.
+        let item = JSON.parse(sessionStorage.getItem(this.device.id+this.controlUnit.name));
+        if (item !== null) {
+            this.polarChartData = item.data;
+            if (item.log != undefined) {
+                this.controlUnit.log = item.log;
+            }
+        }
+        this.polarChartData = this.polarChartData.slice();
+    }
 
     /**
      * Liest den neuen Wert des Steuerungselements aus und leitet diesen an die REST-Schnittstelle weiter
@@ -42,16 +49,21 @@ export class EnumDeviceDetailsComponent implements OnInit {
         let index = this.controlUnit.values.indexOf(this.new_value);
         _polarChartData[index]++;
 
-        if (this.log_message != null) {
-            this.log_message += "\n";
-        } else {
-            this.log_message = "";
-        }
-        this.log_message += new Date().toLocaleString() + ": " + this.controlUnit.values[this.controlUnit.current] + " -> " + this.new_value;
 
-        this.controlUnit.log = this.log_message;
+        let currentDate = new Date().toLocaleString();
+        let newLog = currentDate + ": " + this.controlUnit.values[this.controlUnit.current] + " -> " + this.new_value;
+
+        if (this.controlUnit.log != null) {
+            this.controlUnit.log += "\n";
+        } else {
+            this.controlUnit.log = "";
+        }
+        this.controlUnit.log += newLog;
+
         this.polarChartData = _polarChartData;
         this.controlUnit.current = index;
+
+        this.deviceService.changeDevice(this.device, {log: newLog, controlUnit: this.controlUnit, new_value: index, current_date: currentDate}).subscribe();
     }
 
     isSelected(val: string): boolean {

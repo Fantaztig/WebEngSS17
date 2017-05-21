@@ -32,8 +32,15 @@ var EnumDeviceDetailsComponent = (function () {
             this.polarChartLabels.push(val);
             this.polarChartData.push(0);
         }
+        var item = JSON.parse(sessionStorage.getItem(this.device.id + this.controlUnit.name));
+        if (item !== null) {
+            this.polarChartData = item.data;
+            if (item.log != undefined) {
+                this.controlUnit.log = item.log;
+            }
+        }
+        this.polarChartData = this.polarChartData.slice();
     };
-    //TODO Überarbeiten Sie diese Klasse. Lesen Sie die Daten für das Diagramm aus dem SessionStorage aus und passen Sie die onSubmit Funktion an.
     /**
      * Liest den neuen Wert des Steuerungselements aus und leitet diesen an die REST-Schnittstelle weiter
      */
@@ -42,16 +49,18 @@ var EnumDeviceDetailsComponent = (function () {
         var _polarChartData = Object.assign({}, this.polarChartData);
         var index = this.controlUnit.values.indexOf(this.new_value);
         _polarChartData[index]++;
-        if (this.log_message != null) {
-            this.log_message += "\n";
+        var currentDate = new Date().toLocaleString();
+        var newLog = currentDate + ": " + this.controlUnit.values[this.controlUnit.current] + " -> " + this.new_value;
+        if (this.controlUnit.log != null) {
+            this.controlUnit.log += "\n";
         }
         else {
-            this.log_message = "";
+            this.controlUnit.log = "";
         }
-        this.log_message += new Date().toLocaleString() + ": " + this.controlUnit.values[this.controlUnit.current] + " -> " + this.new_value;
-        this.controlUnit.log = this.log_message;
+        this.controlUnit.log += newLog;
         this.polarChartData = _polarChartData;
         this.controlUnit.current = index;
+        this.deviceService.changeDevice(this.device, { log: newLog, controlUnit: this.controlUnit, new_value: index, current_date: currentDate }).subscribe();
     };
     EnumDeviceDetailsComponent.prototype.isSelected = function (val) {
         return val == this.controlUnit.values[this.controlUnit.current];

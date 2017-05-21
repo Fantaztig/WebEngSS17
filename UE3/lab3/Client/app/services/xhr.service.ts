@@ -1,4 +1,3 @@
-/* created by Paul Proell */
 
 import {Device} from '../model/device';
 import {Injectable} from '@angular/core';

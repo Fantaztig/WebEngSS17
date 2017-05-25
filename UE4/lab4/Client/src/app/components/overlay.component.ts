@@ -6,6 +6,8 @@ import {Device} from "../model/device";
 import {ControlUnit} from "../model/controlUnit";
 import {ControlType} from "../model/controlType";
 
+import {Http, Response} from "@angular/http";
+
 @Component({
   selector: 'my-overlay',
   templateUrl: '../views/overlay.component.html'
@@ -23,7 +25,7 @@ export class OverlayComponent implements OnInit {
   addError: boolean = false;
   createError: boolean = false;
 
-  constructor(private deviceService: DeviceService) {
+  constructor(private deviceService: DeviceService, private http:Http) {
   }
 
 
@@ -102,6 +104,12 @@ export class OverlayComponent implements OnInit {
         break;
       default:
         //TODO Lesen Sie die SPARQL - Informationen aus dem SessionStorage und speichern Sie die entsprechenden Informationen zum Gerät
+        let sparqlType = JSON.parse(sessionStorage.getItem('SPARQLType_' + this.selected_type));
+        if (sparqlType) {
+          device.image = sparqlType.url.value;
+          device.image_alt = sparqlType.label.value + " als Indikator für Aktivierung";
+          device.description = "Genauere Informationen zu diesem/r " + sparqlType.label.value;
+        }
         break;
     }
 
@@ -163,6 +171,17 @@ export class OverlayComponent implements OnInit {
 
   getSPARQLTypes(): void {
     //TODO Lesen Sie mittels SPARQL die gewünschten Daten (wie in der Angabe beschrieben) aus und speichern Sie diese im SessionStorage
+    this.http.get('http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+dcterms%3A+<http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F>%0D%0APREFIX+category%3A+<http%3A%2F%2Fdbpedia.org%2Fresource%2FCategory%3A>%0D%0APREFIX+dbo%3A+<http%3A%2F%2Fdbpedia.org%2Fontology%2F>%0D%0APREFIX+owl%3A+<http%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23>%0D%0ASELECT+DISTINCT+%3Flabel+%3Furl+WHERE+{%0D%0A+%3Farticle+dcterms%3Asubject+category%3AHome_automation%3B%0D%0A+rdf%3Atype+owl%3AThing%3B%0D%0A+dbo%3Athumbnail+%3Furl%3B%0D%0A+rdfs%3Alabel+%3Flabel.%0D%0A+%3Fproduct+dbo%3Aproduct+%3Farticle.%0D%0A+FILTER+(lang(%3Flabel)+%3D+\'de\').%0D%0A}&format=text%2Fhtml&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&format=json').toPromise().then(response => {
+      if (response.json() && response.json().results.bindings) {
+        let bindings = response.json().results.bindings;
+        for (let current of bindings) {
+          sessionStorage.setItem('SPARQLType_' + current.label.value, JSON.stringify(current));
+          this.device_types.push(current.label.value);
+        }
+      }
+    }).catch((error: Response) => {
+      console.error(error);
+    });
   }
 
 

@@ -31,6 +31,28 @@ app.use(bodyParser.json());
 app.use(cors());
 
 /**
+ * Set up TLS
+ */
+https.createServer({
+    key: fs.readFileSync('cert/key.pem'),
+    cert: fs.readFileSync('cert/cert.pem')
+}, app).listen(4443);
+
+/*
+**
+* Redirect HTTP Traffic to HTTPS
+*/
+
+/*app.use(function(req, res, next) {
+ if(req.secure) {
+ return next();
+ } else {
+ res.redirect('https://localhost:4443' + req.url);
+ }
+ });*/
+
+
+/**
  * Listet alle Geräte auf
  */
 app.get('/listDevices', function (req, res) {

@@ -30,26 +30,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
-/**
- * Set up TLS
- */
-https.createServer({
-    key: fs.readFileSync('cert/key.pem'),
-    cert: fs.readFileSync('cert/cert.pem')
-}, app).listen(4443);
 
 /*
-**
-* Redirect HTTP Traffic to HTTPS
+ setup twitter client
 */
-
-/*app.use(function(req, res, next) {
- if(req.secure) {
- return next();
- } else {
- res.redirect('https://localhost:4443' + req.url);
- }
- });*/
+var twitter_client = new twitter({
+  consumer_key: 'GZ6tiy1XyB9W0P4xEJudQ',
+  consumer_secret: 'gaJDlW0vf7en46JwHAOkZsTHvtAiZ3QUd2mD1x26J9w',
+  access_token_key: '1366513208-MutXEbBMAVOwrbFmZtj1r4Ih2vcoHGHE2207002',
+  access_token_secret: 'RMPWOePlus3xtURWRVnv1TgrjTyK7Zk33evp4KKyA'
+});
 
 
 /**
@@ -100,6 +90,11 @@ app.post("/createDevice", function (req, res) {
                 //  - die benötigte Bibliothek ist bereits eingebunden
                 //  - siehe https://www.npmjs.com/package/twitter für eine Beschreibung der Bibliothek
                 //  - verwenden Sie getTwitterPublicationString(groupNum, uuid, date) um den Publication String zu erstellen
+                var message = getTwitterPublicationString(80, device.id, new Date());
+                twitter_client.post('statuses/update', {status: message},  function(error, tweet, response) {
+                    if(error) throw error;
+                    console.log(message);  
+                });
             }
         });
     } else {
@@ -430,9 +425,9 @@ function readUser() {
     "use strict";
     var input = fs.readFileSync('./resources/login.config');
 
-    var data = input.toString().split("\r\n");
-    var user_line = data[0];
-    var password_line = data[1];
+    var data = input.toString().split("\n");
+    var user_line = data[0].trim();
+    var password_line = data[1].trim();
 
     var password = password_line.substring(password_line.indexOf(":") + 2, password_line.length);
     var username = user_line.substring(user_line.indexOf(":") + 2, user_line.length);
@@ -589,6 +584,27 @@ function getTwitterPublicationString(groupNum, uuid, date) {
 //  - Die Schnittstelle darf weiterhin via http erreicht werden
 //  - Der Websocket soll auch weiterhin über http abgewickelt werden
 //  - zu https mit node.js siehe https://nodejs.org/api/https.html
+
+/**
+ * Set up TLS
+ */
+https.createServer({
+    key: fs.readFileSync('cert/server.key'),
+    cert: fs.readFileSync('cert/server.crt')
+}, app).listen(8443);
+
+/*
+**
+* Redirect HTTP Traffic to HTTPS
+*/
+
+app.use(function(req, res, next) {
+    if(req.secure) {
+        return next();
+    } else {
+        res.redirect('https://localhost:4443' + req.url);
+    }
+ });
 
 /**
  * Programmeinstieg

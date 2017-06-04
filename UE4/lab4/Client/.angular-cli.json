@@ -1,15 +1,21 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "test"
+    "name": "test1"
   },
   "apps": [
     {
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets",
-        "favicon.ico"
+        { "glob": "shim.min.js", "input": "../node_modules/core-js/client/", "output": "./node_modules/core-js/client/" },
+        { "glob": "zone.js", "input": "../node_modules/zone.js/dist/", "output": "./node_modules/zone.js/dist/" },
+		{ "glob": "system.src.js", "input": "../node_modules/systemjs/dist/", "output": "./node_modules/systemjs/dist/" },
+		{ "glob": "Chart.js", "input": "../node_modules/chart.js/dist/", "output": "./node_modules/chart.js/dist/" },
+		{ "glob": "**/*", "input": "../scripts/", "output": "./scripts/" },
+		{ "glob": "**/*", "input": "../styles/", "output": "./styles/" },
+		"systemjs.config.js",
+		"favicon.ico"
       ],
       "index": "index.html",
       "main": "main.ts",
